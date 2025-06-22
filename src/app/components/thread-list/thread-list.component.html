@@ -1,0 +1,43 @@
+<div class="thread-list-page">
+  <!-- Search + Filter Row -->
+  <div class="filter-search-container">
+    <!-- Search Bar -->
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Search threads..."
+      class="search-bar"
+    />
+
+    <!-- Filter Button + Dropdown Container -->
+    <div class="filter-container">
+      <button class="filter-btn" (click)="toggleFilterDropdown()">Filter</button>
+
+      <!-- Dropdown appears directly under the button -->
+      <div class="tag-filter-dropdown" *ngIf="showFilterDropdown">
+        <label *ngFor="let tag of allTags" class="tag-checkbox">
+          <input
+            type="checkbox"
+            [value]="tag"
+            (change)="toggleTagFilter(tag, $event)"
+          />
+          {{ tag }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thread List -->
+  <div class="thread-list">
+    <ul>
+      <li *ngFor="let thread of filteredThreads">
+        <app-thread-card [thread]="thread"></app-thread-card>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Ask Question Button -->
+<button class="ask-question-btn" (click)="onAskQuestion()">
+  Ask Question
+</button>

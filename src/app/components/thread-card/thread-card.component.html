@@ -1,0 +1,50 @@
+<div class="thread-card">
+  <div class="thread-content">
+    <!-- Thread Title -->
+    <h3 class="thread-title">
+      <a [routerLink]="['/thread', thread.id]">
+        {{ thread.title }}
+      </a>
+    </h3>
+
+    <!-- Description Snippet -->
+    <p class="thread-snippet">
+      {{ getPreview(thread.description) }}
+      <a [routerLink]="['/thread', thread.id]">Read more</a>
+    </p>
+
+    <!-- Tags -->
+    <div class="thread-tags" *ngIf="thread.tags?.length">
+      <span *ngFor="let tag of thread.tags" class="tag-label">{{ tag }}</span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="thread-actions">
+      <button class="action-btn like-btn" (click)="onLike()">Like</button>
+      <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
+      <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
+    </div>
+
+    <!-- Reply Box -->
+    <div *ngIf="showReplyBox" class="reply-box">
+      <textarea
+        [(ngModel)]="replyText"
+        placeholder="Write your reply..."
+        rows="4"
+      ></textarea>
+      <button (click)="submitReply()">Submit</button>
+    </div>
+  </div>
+
+  <!-- Stats on the Right -->
+  <div class="thread-stats">
+    <div>Likes {{ thread.likes }}</div>
+    <div>Dislikes {{ thread.dislikes }}</div>
+    <div>Replies {{ thread.replies?.length || 0 }}</div>
+  </div>
+
+  <!-- Author at the Bottom Right -->
+  <div class="thread-author">
+    Posted by: {{ thread.author?.username || 'Unknown' }}
+  </div>
+</div>

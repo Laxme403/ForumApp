@@ -1,0 +1,176 @@
+.thread-card {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+
+  .thread-main {
+    flex: 1;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 5rem;
+    color: #222833;
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .description-preview {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .read-more {
+    display: inline-block;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: red;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+
+    &:hover {
+      color: #0056b3;
+    }
+  }
+
+  .thread-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .action-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .like-btn {
+    background-color: #393E46;
+    color: white;
+    border: 1px solid #222833;
+  }
+
+  .dislike-btn {
+    background-color: #393E46;
+    color: white;
+    border: 1px solid #222833;
+  }
+
+  .reply-btn {
+    background-color: #393E46;
+    color: white;
+    border: 1px solid #222833;
+  }
+
+  .action-btn:hover {
+  
+  background-color: #222833;
+  border-color: white;
+
+  }
+
+  .thread-stats {
+    min-width: 90px;
+    font-size: 0.9rem;
+    color: #444;
+    text-align: right;
+
+    div {
+      margin-bottom: 0.4rem;
+    }
+  }
+  .thread-tags {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag-label {
+  background-color: #e0e0e0;  // light grey background
+  color: #555;                // dark grey text
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  user-select: none;
+  white-space: nowrap;
+}
+.reply-box {
+  margin-top: 0.75rem;
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    margin-bottom: 0.5rem;
+  }
+
+  button {
+    background-color: #222833;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #1a1e25;
+    }
+  }
+}
+.thread-actions-author {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.thread-author {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+  
+}
+.thread-title a {
+  color: #222833;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease-in-out;
+}
+
+.thread-title a:hover {
+  text-decoration: underline;
+  color: #1a1d22; /* Optional: a slightly darker shade on hover */
+}
+
+}
