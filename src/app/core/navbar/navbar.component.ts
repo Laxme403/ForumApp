@@ -1,29 +1,37 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LoginModalComponent } from '../../shared/login-modal/login-modal.component'; // adjust path as needed
+import { UserRegisterComponent } from '../../components/user-register/user-register.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoginModalComponent],
+  imports: [CommonModule, RouterModule, UserRegisterComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  showLoginModal = false;
+  showRegister = false;
+  registerSuccess = false;
 
   constructor(private router: Router) {}
 
   navigateTo(path: string): void {
-    if (path === '/login') {
-      this.showLoginModal = true;
-    } else {
-      this.router.navigate([path]);
-    }
+    this.router.navigate([path]);
   }
 
-  closeLoginModal(): void {
-    this.showLoginModal = false;
+  openRegister(): void {
+    this.showRegister = true;
+    this.registerSuccess = false;
+  }
+
+  closeRegister(): void {
+    this.showRegister = false;
+  }
+
+  onRegisterSuccess(): void {
+    this.showRegister = false;
+    this.registerSuccess = true;
+    setTimeout(() => this.registerSuccess = false, 3000);
   }
 }

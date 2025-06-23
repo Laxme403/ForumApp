@@ -53,4 +53,9 @@ export class ThreadCardComponent {
     this.replyText = '';
     this.showReplyBox = false;
   }
+
+  // Add this method to your component class
+  isArray(val: any): val is any[] {
+    return Array.isArray(val);
+  }
 }

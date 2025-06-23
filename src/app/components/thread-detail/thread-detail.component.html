@@ -3,15 +3,16 @@
 
 <div *ngIf="thread">
   <h2>{{ thread.title }}</h2>
-  <p><strong>Author:</strong> {{ thread.author?.username || thread.author }}</p>
+  <p><strong>Author:</strong> {{ thread.author }}</p>
   <p><strong>Description:</strong> {{ thread.description }}</p>
   <p><strong>Likes:</strong> {{ thread.likes }} | <strong>Dislikes:</strong> {{ thread.dislikes }}</p>
 
   <h3>Replies</h3>
-  <ul *ngIf="thread.replies?.length; else noReplies">
+  <!-- Use the helper method instead of Array.isArray -->
+  <ul *ngIf="isArray(thread.replies) && thread.replies.length; else noReplies">
     <li *ngFor="let reply of thread.replies">
-      <p><strong>{{ reply.author }}</strong>: {{ reply.content }}</p>
+      <strong>{{ reply.authorname }}:</strong> {{ reply.content }}
     </li>
   </ul>
-  <ng-template #noReplies><p>No replies yet.</p></ng-template>
+  <ng-template #noReplies>No replies yet.</ng-template>
 </div>

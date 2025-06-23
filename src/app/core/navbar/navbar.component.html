@@ -1,8 +1,18 @@
 <nav class="navbar">
   <ul class="nav-links">
     <li><button (click)="navigateTo('/')">Home</button></li>
-    <li><button (click)="navigateTo('/login')">Login</button></li>
+    <li><button (click)="openRegister()">Register</button></li>
   </ul>
 </nav>
 
-<app-login-modal *ngIf="showLoginModal" (close)="closeLoginModal()"></app-login-modal>
+<!-- Modal overlay and modal content -->
+<div class="modal-overlay" *ngIf="showRegister" (click)="closeRegister()"></div>
+<div class="modal" *ngIf="showRegister">
+  <app-user-register (registered)="onRegisterSuccess()"></app-user-register>
+  <button class="close-btn" (click)="closeRegister()">Close</button>
+</div>
+
+<div *ngIf="registerSuccess" class="register-success-message">
+  Successfully registered!
+</div>
+

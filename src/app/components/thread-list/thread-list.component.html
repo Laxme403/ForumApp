@@ -32,6 +32,18 @@
     <ul>
       <li *ngFor="let thread of filteredThreads">
         <app-thread-card [thread]="thread"></app-thread-card>
+        <div>
+          Replies
+          <ng-container *ngIf="isArray(thread.replies); else replyCount">
+            {{ thread.replies.length }}
+          </ng-container>
+          <ng-template #replyCount>
+            {{ thread.replies || 0 }}
+          </ng-template>
+        </div>
+        <div>
+          Posted by: {{ thread.author }}
+        </div>
       </li>
     </ul>
   </div>

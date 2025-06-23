@@ -23,22 +23,32 @@ export class ThreadDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    this.threadId = idParam ? Number(idParam) : NaN;
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      this.threadId = idParam ? Number(idParam) : NaN;
 
-    if (isNaN(this.threadId)) {
-      this.error = 'Invalid thread ID';
-      return;
-    }
+      if (isNaN(this.threadId)) {
+        this.error = 'Invalid thread ID';
+        this.thread = null;
+        return;
+      }
 
-    this.fetchThread();
+      this.fetchThread();
+    });
   }
 
   fetchThread(): void {
     this.loading = true;
+    this.error = '';
+    this.thread = null;
+
     this.threadService.getThreadById(this.threadId).subscribe({
       next: (data) => {
-        this.thread = data;
+        if (data) {
+          this.thread = data;
+        } else {
+          this.error = 'Thread not found';
+        }
         this.loading = false;
       },
       error: (err) => {
@@ -47,5 +57,10 @@ export class ThreadDetailComponent implements OnInit {
         console.error('Thread fetch error:', err);
       }
     });
+  }
+
+  // Add this method to your component class
+  isArray(val: any): val is any[] {
+    return Array.isArray(val);
   }
 }

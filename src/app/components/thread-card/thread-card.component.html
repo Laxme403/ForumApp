@@ -40,11 +40,19 @@
   <div class="thread-stats">
     <div>Likes {{ thread.likes }}</div>
     <div>Dislikes {{ thread.dislikes }}</div>
-    <div>Replies {{ thread.replies?.length || 0 }}</div>
+    <div>
+      Replies
+      <ng-container *ngIf="isArray(thread.replies); else replyCount">
+        {{ thread.replies.length }}
+      </ng-container>
+      <ng-template #replyCount>
+        {{ thread.replies || 0 }}
+      </ng-template>
+    </div>
   </div>
 
   <!-- Author at the Bottom Right -->
-  <div class="thread-author">
-    Posted by: {{ thread.author?.username || 'Unknown' }}
+  <div>
+    Posted by: {{ thread.author }}
   </div>
 </div>
