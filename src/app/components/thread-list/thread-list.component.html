@@ -31,16 +31,10 @@
   <div class="thread-list">
     <ul>
       <li *ngFor="let thread of filteredThreads">
-        <app-thread-card [thread]="thread"></app-thread-card>
-        <div>
-          Replies
-          <ng-container *ngIf="isArray(thread.replies); else replyCount">
-            {{ thread.replies.length }}
-          </ng-container>
-          <ng-template #replyCount>
-            {{ thread.replies || 0 }}
-          </ng-template>
-        </div>
+        <app-thread-card
+          [thread]="thread"
+          (requestRegister)="showUserRegisterModal = true">
+        </app-thread-card>
         <div>
           Posted by: {{ thread.author }}
         </div>
@@ -50,14 +44,21 @@
 </div>
 
 <!-- Ask Question Button -->
-<button (click)="openThreadCreate()">Ask Question</button>
+<button class="ask-question-btn" (click)="openThreadCreate()">Ask Question</button>
 
 <!-- Modal overlay and modal content -->
 <div class="modal-overlay" *ngIf="showThreadCreateModal" (click)="closeThreadCreate()"></div>
 <div class="modal" *ngIf="showThreadCreateModal">
   <app-thread-create
     [author]="loggedInUsername"
-    (created)="onThreadCreated()">
+    (created)="closeThreadCreate()">
   </app-thread-create>
-  <button class="close-btn" (click)="closeThreadCreate()">Close</button>
+</div>
+
+
+
+<!-- User Register Modal -->
+<div class="modal-overlay" *ngIf="showUserRegisterModal" (click)="closeUserRegisterModal()"></div>
+<div class="modal" *ngIf="showUserRegisterModal">
+  <app-user-register (registered)="closeUserRegisterModal(); openThreadCreate()"></app-user-register>
 </div>

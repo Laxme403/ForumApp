@@ -8,10 +8,22 @@
     <textarea formControlName="description" required></textarea>
   </div>
   <div>
-    <label>Tags (comma separated):</label>
-    <input formControlName="tags">
+    <label>Tags:</label>
+    <div class="tags-checkbox-group">
+      <label *ngFor="let tag of tagOptions">
+        <input
+          type="checkbox"
+          [value]="tag"
+          (change)="onTagChange($event)"
+          [checked]="selectedTags.includes(tag)"
+        />
+        {{ tag }}
+      </label>
+    </div>
   </div>
-  <button type="submit" [disabled]="threadForm.invalid">Create Thread</button>
+  <button type="submit" class="create-thread-btn-bottom" [disabled]="threadForm.invalid">
+    CREATE
+  </button>
   <div *ngIf="success" class="success">{{ success }}</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 </form>

@@ -17,6 +17,9 @@ export class ThreadCreateComponent {
   success = '';
   error = '';
 
+  tagOptions = ['frontend', '.net', 'sql', 'angular', 'c#', 'database'];
+  selectedTags: string[] = [];
+
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.threadForm = this.fb.group({
       title: ['', Validators.required],
@@ -55,6 +58,17 @@ export class ThreadCreateComponent {
         }
       });
     }
+  }
+
+  onTagChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.checked) {
+      this.selectedTags.push(input.value);
+    } else {
+      this.selectedTags = this.selectedTags.filter(tag => tag !== input.value);
+    }
+    // Update the form control value as a comma-separated string or array as needed by your backend
+    this.threadForm.get('tags')?.setValue(this.selectedTags.join(','));
   }
 
   // Assuming you have a login method where you get the response with username and id

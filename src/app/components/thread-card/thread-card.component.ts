@@ -3,22 +3,29 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Thread } from '../../models/thread.model';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
 // Submodels to match backend
 
 
 @Component({
   selector: 'app-thread-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
   templateUrl: './thread-card.component.html',
   styleUrls: ['./thread-card.component.scss']
 })
 export class ThreadCardComponent {
   @Input() thread!: Thread;
   @Output() titleClick = new EventEmitter<Event>();
+  @Output() requestRegister = new EventEmitter<void>();
 
   showReplyBox = false;
   replyText = '';
+
+  likeStatus: 'like' | 'dislike' | null = null; // Track current user's action
+
+  constructor(private http: HttpClient) {}
 
   onTitleClick(event: Event): void {
     event.preventDefault();
@@ -30,12 +37,52 @@ export class ThreadCardComponent {
     return sentences.slice(0, 2).join(' ');
   }
 
-  onLike(): void {
-    console.log(`Liked thread ID: ${this.thread.id}`);
+  onLike() {
+    const userId = localStorage.getItem('userId');
+    if (!userId || userId === '0') {
+      this.requestRegister.emit();
+      return;
+    }
+
+    // UI logic for toggling like/dislike
+    if (this.likeStatus === 'like') {
+      this.thread.likes--;
+      this.likeStatus = null;
+    } else {
+      if (this.likeStatus === 'dislike') {
+        this.thread.dislikes--;
+      }
+      this.thread.likes++;
+      this.likeStatus = 'like';
+    }
+
+    // Call backend to persist like
+    this.http.post(`http://localhost:5226/api/threads/${this.thread.id}/like`, {})
+      .subscribe();
   }
 
-  onDislike(): void {
-    console.log(`Disliked thread ID: ${this.thread.id}`);
+  onDislike() {
+    const userId = localStorage.getItem('userId');
+    if (!userId || userId === '0') {
+      this.requestRegister.emit();
+      return;
+    }
+
+    // UI logic for toggling like/dislike
+    if (this.likeStatus === 'dislike') {
+      this.thread.dislikes--;
+      this.likeStatus = null;
+    } else {
+      if (this.likeStatus === 'like') {
+        this.thread.likes--;
+      }
+      this.thread.dislikes++;
+      this.likeStatus = 'dislike';
+    }
+
+    // Call backend to persist dislike
+    this.http.post(`http://localhost:5226/api/threads/${this.thread.id}/dislike`, {})
+      .subscribe();
   }
 
   onReply(): void {

@@ -110,3 +110,76 @@ li {
     box-shadow: 0 12px 20px rgba(0, 123, 255, 0.4);
   }
 }
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 1.5rem; // <-- Leaves space from the right edge
+  min-width: 180px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(34,40,51,0.08);
+  padding: 1rem;
+  z-index: 100;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(34, 40, 51, 0.6);
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 2.5rem 3rem;         // Increased padding
+  z-index: 1010;
+  min-width: 420px;             // Increased min-width
+  max-width: 98vw;
+  width: 600px;                 // Increased width
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;                  // More space between elements
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem; // slightly more space between each label+field group
+
+    // Group label and field together for better spacing
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem; // space between label and its field
+    }
+  }
+
+  label {
+    font-weight: 500;
+    color: #222833;
+    font-size: 1rem;
+    margin-bottom: 0; // remove margin here, handled by .form-group gap
+  }
+
+  input,
+  textarea,
+  select {
+    margin-bottom: 0; // remove default margin if any
+  }
+}
+
+// Make description field larger and more comfortable
+.description-field,
+textarea[name="description"] {
+  min-height: 180px;            // Even more vertical space for typing
+  font-size: 1.12rem;
+  padding: 0.9rem 1.1rem;
+  resize: vertical;
+}

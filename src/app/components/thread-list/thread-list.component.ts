@@ -5,11 +5,18 @@ import { ThreadCardComponent } from '../../components/thread-card/thread-card.co
 import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
 import { ThreadCreateComponent } from '../thread-create/thread-create.component'; 
+import { UserRegisterComponent } from '../user-register/user-register.component';
 
 @Component({
   selector: 'app-thread-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ThreadCardComponent, ThreadCreateComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ThreadCardComponent,
+    ThreadCreateComponent,
+    UserRegisterComponent
+  ],
   templateUrl: './thread-list.component.html',
   styleUrls: ['./thread-list.component.scss']
 })
@@ -22,6 +29,7 @@ export class ThreadListComponent implements OnInit {
   selectedTags: Set<string> = new Set();
 
   showThreadCreateModal = false;
+  showUserRegisterModal = false;
 
   constructor(private threadService: ThreadService) {}
 
@@ -49,21 +57,26 @@ export class ThreadListComponent implements OnInit {
     }
   }
 
-  get filteredThreads(): Thread[] {
-    const term = this.searchTerm.trim().toLowerCase();
+  get filteredThreads() {
+    let filtered = this.threads;
 
-    return this.threads.filter(thread => {
-      const matchesSearch =
-        !term ||
-        thread.title.toLowerCase().includes(term) ||
-        thread.author.toLowerCase().includes(term);
+    // Filter by selected tags if any tags are selected
+    if (this.selectedTags.size > 0) {
+      filtered = filtered.filter(thread =>
+        Array.isArray(thread.tags) &&
+        thread.tags.some(tag => this.selectedTags.has(tag))
+      );
+    }
 
-      const matchesTags =
-        this.selectedTags.size === 0 ||
-        thread.tags.some(tag => this.selectedTags.has(tag));
+    // Filter by search term (only thread titles)
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(thread =>
+        thread.title.toLowerCase().includes(term)
+      );
+    }
 
-      return matchesSearch && matchesTags;
-    });
+    return filtered;
   }
 
   toggleFilterDropdown(): void {
@@ -80,7 +93,12 @@ export class ThreadListComponent implements OnInit {
   }
 
   openThreadCreate() {
-    this.showThreadCreateModal = true;
+    const userId = localStorage.getItem('userId');
+    if (!userId || userId === '0') {
+      this.showUserRegisterModal = true;
+    } else {
+      this.showThreadCreateModal = true;
+    }
   }
 
   closeThreadCreate() {
@@ -92,7 +110,12 @@ export class ThreadListComponent implements OnInit {
     this.fetchThreads();
   }
 
+  closeUserRegisterModal() {
+    this.showUserRegisterModal = false;
+  }
+
   get loggedInUsername() {
     return localStorage.getItem('username') || '';
   }
 }
+
