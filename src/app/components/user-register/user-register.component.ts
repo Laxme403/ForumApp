@@ -24,19 +24,23 @@ export class UserRegisterComponent {
   }
 
   onSubmit() {
+    console.log('Register form submitted', this.registerForm.value);
     if (this.registerForm.valid) {
-      this.http.post('/api/users/register', this.registerForm.value).subscribe({
-        next: () => {
-          this.success = 'Registration successful!';
-          this.error = '';
-          this.registerForm.reset();
-          this.registered.emit();
-        },
-        error: err => {
-          this.error = err.error?.message || 'Registration failed';
-          this.success = '';
-        }
-      });
+      this.http.post('http://localhost:5226/api/users/register', this.registerForm.value)
+        .subscribe({
+          next: (response: any) => {
+            localStorage.setItem('username', response.username);
+            localStorage.setItem('userId', response.id); // Make sure response.id is the user ID!
+            this.success = 'Registration successful!';
+            this.error = '';
+            this.registerForm.reset();
+            this.registered.emit();
+          },
+          error: err => {
+            this.error = err.error?.message || 'Registration failed';
+            this.success = '';
+          }
+        });
     }
   }
 }

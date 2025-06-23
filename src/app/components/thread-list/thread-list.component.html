@@ -50,6 +50,14 @@
 </div>
 
 <!-- Ask Question Button -->
-<button class="ask-question-btn" (click)="onAskQuestion()">
-  Ask Question
-</button>
+<button (click)="openThreadCreate()">Ask Question</button>
+
+<!-- Modal overlay and modal content -->
+<div class="modal-overlay" *ngIf="showThreadCreateModal" (click)="closeThreadCreate()"></div>
+<div class="modal" *ngIf="showThreadCreateModal">
+  <app-thread-create
+    [author]="loggedInUsername"
+    (created)="onThreadCreated()">
+  </app-thread-create>
+  <button class="close-btn" (click)="closeThreadCreate()">Close</button>
+</div>

@@ -1,1 +1,17 @@
-<p>thread-create works!</p>
+<form [formGroup]="threadForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Title:</label>
+    <input formControlName="title" required>
+  </div>
+  <div>
+    <label>Description:</label>
+    <textarea formControlName="description" required></textarea>
+  </div>
+  <div>
+    <label>Tags (comma separated):</label>
+    <input formControlName="tags">
+  </div>
+  <button type="submit" [disabled]="threadForm.invalid">Create Thread</button>
+  <div *ngIf="success" class="success">{{ success }}</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</form>

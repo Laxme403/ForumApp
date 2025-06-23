@@ -1,0 +1,129 @@
+// Modal overlay
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(34, 40, 51, 0.6);
+  z-index: 1000;
+}
+
+// Modal container
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 1.2rem 1.5rem;
+  z-index: 1010;
+  min-width: 280px;
+  max-width: 95vw;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+// Form styles
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  label {
+    font-weight: 500;
+    margin-bottom: 0.15rem;
+    color: #222833;
+    font-size: 0.98rem;
+  }
+
+  input, textarea {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.98rem;
+    background: #fff;
+    transition: border-color 0.2s;
+    &:focus {
+      border-color: #393E46;
+      outline: none;
+    }
+  }
+
+  textarea {
+    min-height: 60px;
+    resize: vertical;
+  }
+
+  button[type="submit"] {
+    background: #393E46;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.2rem;
+    transition: background 0.2s;
+    min-width: 90px;
+    max-width: 120px;
+    align-self: flex-start; // <-- Move button to the left
+    &:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    &:hover:not(:disabled) {
+      background: #222833;
+    }
+  }
+}
+
+// Success and error messages
+.success, .error {
+  padding: 0.5rem;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+.success {
+  color: #388e3c;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+}
+.error {
+  color: #c62828;
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+}
+
+// Close button (if you have one)
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #393E46;
+  font-size: 1.1rem;
+  font-weight: bold;
+  position: absolute;
+  top: 0.7rem;
+  right: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  &:hover {
+    color: #c62828;
+  }
+}
+
+// Responsive
+@media (max-width: 500px) {
+  .modal {
+    padding: 0.7rem;
+    min-width: 90vw;
+    width: 95vw;
+  }
+}

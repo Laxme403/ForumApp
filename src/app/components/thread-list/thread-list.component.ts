@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ThreadCardComponent } from '../../components/thread-card/thread-card.component';
 import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
+import { ThreadCreateComponent } from '../thread-create/thread-create.component'; 
 
 @Component({
   selector: 'app-thread-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ThreadCardComponent],
+  imports: [CommonModule, FormsModule, ThreadCardComponent, ThreadCreateComponent],
   templateUrl: './thread-list.component.html',
   styleUrls: ['./thread-list.component.scss']
 })
@@ -20,18 +21,23 @@ export class ThreadListComponent implements OnInit {
   allTags: string[] = [];
   selectedTags: Set<string> = new Set();
 
+  showThreadCreateModal = false;
+
   constructor(private threadService: ThreadService) {}
 
-  ngOnInit(): void {
+  fetchThreads() {
     this.threadService.getThreads().subscribe((data) => {
       this.threads = data;
-
       const tagSet = new Set<string>();
       this.threads.forEach(thread => {
         thread.tags.forEach(tag => tagSet.add(tag));
       });
       this.allTags = Array.from(tagSet).sort();
     });
+  }
+
+  ngOnInit(): void {
+    this.fetchThreads();
   }
 
   toggleTagFilter(tag: string, event: Event): void {
@@ -71,5 +77,22 @@ export class ThreadListComponent implements OnInit {
 
   isArray(val: any): val is any[] {
     return Array.isArray(val);
+  }
+
+  openThreadCreate() {
+    this.showThreadCreateModal = true;
+  }
+
+  closeThreadCreate() {
+    this.showThreadCreateModal = false;
+  }
+
+  onThreadCreated() {
+    this.closeThreadCreate();
+    this.fetchThreads();
+  }
+
+  get loggedInUsername() {
+    return localStorage.getItem('username') || '';
   }
 }
