@@ -5,6 +5,6 @@ export interface Reply {
   id: number;
   content: string;
   authorname: string;   // username string from DB
-  threadid: number;
+  threadId: number;
   userid: number;
 }

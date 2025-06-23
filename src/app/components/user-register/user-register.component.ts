@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserRegisterComponent {
   @Output() registered = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
   registerForm: FormGroup;
   success = '';
   error = '';
@@ -34,7 +35,7 @@ export class UserRegisterComponent {
             this.success = 'Registration successful!';
             this.error = '';
             this.registerForm.reset();
-            this.registered.emit();
+            this.onRegisterSuccess();
           },
           error: err => {
             this.error = err.error?.message || 'Registration failed';
@@ -42,5 +43,13 @@ export class UserRegisterComponent {
           }
         });
     }
+  }
+
+  onRegisterSuccess() {
+    this.registered.emit();
+  }
+
+  onClose() {
+    this.close.emit();
   }
 }

@@ -24,6 +24,7 @@ export class ThreadCardComponent {
   replyText = '';
 
   likeStatus: 'like' | 'dislike' | null = null; // Track current user's action
+  expanded = false; // <-- Add this line
 
   constructor(private http: HttpClient) {}
 

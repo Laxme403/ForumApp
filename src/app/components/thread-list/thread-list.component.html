@@ -51,7 +51,7 @@
 <div class="modal" *ngIf="showThreadCreateModal">
   <app-thread-create
     [author]="loggedInUsername"
-    (created)="closeThreadCreate()">
+    (created)="onThreadCreated()">
   </app-thread-create>
 </div>
 

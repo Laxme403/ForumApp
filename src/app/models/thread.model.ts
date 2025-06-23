@@ -6,9 +6,9 @@ export interface Thread {
   title: string;
   description: string;
   userId: number;
-  author: string;        // optional user details
-  replies: Reply[]|number;    // optional replies list
-  tags: string[];
+  author: string;
   likes: number;
   dislikes: number;
+  tags: string[]; // Changed to only allow array of strings
+  replies: number;
 }

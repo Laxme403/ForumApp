@@ -35,10 +35,13 @@ export class ThreadListComponent implements OnInit {
 
   fetchThreads() {
     this.threadService.getThreads().subscribe((data) => {
-      this.threads = data;
+      this.threads = data.map(thread => ({
+        ...thread,
+      }));
+
       const tagSet = new Set<string>();
       this.threads.forEach(thread => {
-        thread.tags.forEach(tag => tagSet.add(tag));
+        (thread.tags as string[]).forEach(tag => tagSet.add(tag));
       });
       this.allTags = Array.from(tagSet).sort();
     });

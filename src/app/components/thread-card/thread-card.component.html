@@ -7,15 +7,18 @@
       </a>
     </h3>
 
-    <!-- Description Snippet -->
-    <p class="thread-snippet">
+    <!-- Description: Show preview or full based on expanded -->
+    <p class="thread-snippet" *ngIf="!expanded">
       {{ getPreview(thread.description) }}
-      <a [routerLink]="['/thread', thread.id]">Read more</a>
+      <a href="#" (click)="expanded = true; $event.preventDefault()">Read more</a>
+    </p>
+    <p class="thread-description" *ngIf="expanded">
+      {{ thread.description }}
     </p>
 
     <!-- Tags -->
     <div class="thread-tags" *ngIf="thread.tags?.length">
-      <span *ngFor="let tag of thread.tags" class="tag-label">{{ tag }}</span>
+      <span *ngFor="let tag of (isArray(thread.tags) ? thread.tags : thread.tags.split(','))" class="tag-label">{{ tag }}</span>
     </div>
 
     <!-- Action Buttons -->
@@ -50,7 +53,4 @@
       </ng-template>
     </div>
   </div>
-
-  <!-- Author at the Bottom Right -->
-  
 </div>
