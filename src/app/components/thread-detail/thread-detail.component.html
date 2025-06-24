@@ -8,10 +8,9 @@
   <p><strong>Likes:</strong> {{ thread.likes }} | <strong>Dislikes:</strong> {{ thread.dislikes }}</p>
 
   <h3>Replies</h3>
-  <!-- Use the helper method instead of Array.isArray -->
-  <ul *ngIf="isArray(thread.replies) && thread.replies.length; else noReplies">
-    <li *ngFor="let reply of thread.replies">
-      <strong>{{ reply.authorname }}:</strong> {{ reply.content }}
+  <ul *ngIf="isArray(replies) && replies.length; else noReplies">
+    <li *ngFor="let reply of replies">
+      <strong>{{ reply.authorName }}:</strong> {{ reply.content }}
     </li>
   </ul>
   <ng-template #noReplies>No replies yet.</ng-template>

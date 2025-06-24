@@ -4,7 +4,7 @@ import { Thread } from './thread.model';
 export interface Reply {
   id?: number;
   content: string;
-  authorname?: string;   // username string from DB
+  authorName?: string;   // username string from DB
   threadId: number;
   userId: number;
 }
