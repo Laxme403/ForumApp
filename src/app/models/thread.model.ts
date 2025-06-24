@@ -9,6 +9,6 @@ export interface Thread {
   author: string;
   likes: number;
   dislikes: number;
-  tags: string[]; // Changed to only allow array of strings
-  replies: number;
+  tags: string | string[]; // <-- Make sure this is present and typed
+  replies: any; // or a more specific type
 }

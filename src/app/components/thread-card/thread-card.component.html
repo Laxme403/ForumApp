@@ -28,6 +28,13 @@
       <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
     </div>
 
+    <!-- Registration Modal (pseudo) -->
+    <app-user-register
+      *ngIf="showRegisterModal"
+      (registerSuccess)="onRegisterSuccess()"
+      (close)="showRegisterModal = false">
+    </app-user-register>
+
     <!-- Reply Box -->
     <div *ngIf="showReplyBox" class="reply-box">
       <textarea

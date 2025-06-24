@@ -3,107 +3,104 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Thread } from '../../models/thread.model';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-
-// Submodels to match backend
-
+import { HttpClientModule } from '@angular/common/http';
+import { UserRegisterComponent } from '../../components/user-register/user-register.component'; // adjust path as needed
+import { Router } from '@angular/router';
+import { ReplyService } from '../../services/reply.service'; // adjust path as needed
+import { Reply } from '../../models/reply.model';
 
 @Component({
   selector: 'app-thread-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
+  imports: [
+    UserRegisterComponent, // or UserRegisterModalComponent if that's the correct one
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    HttpClientModule,
+  ],
   templateUrl: './thread-card.component.html',
-  styleUrls: ['./thread-card.component.scss']
+  styleUrls: ['./thread-card.component.scss'],
 })
 export class ThreadCardComponent {
   @Input() thread!: Thread;
-  @Output() titleClick = new EventEmitter<Event>();
   @Output() requestRegister = new EventEmitter<void>();
 
+  expanded = false;
+  showRegisterModal = false;
   showReplyBox = false;
   replyText = '';
 
-  likeStatus: 'like' | 'dislike' | null = null; // Track current user's action
-  expanded = false; // <-- Add this line
+  constructor(
+    private router: Router,
+    private replyService: ReplyService
+  ) {}
 
-  constructor(private http: HttpClient) {}
-
-  onTitleClick(event: Event): void {
-    event.preventDefault();
-    this.titleClick.emit(event);
+  getPreview(description: string): string {
+    return description.length > 100
+      ? description.substring(0, 100) + '...'
+      : description;
   }
 
-  getPreview(text: string): string {
-    const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [];
-    return sentences.slice(0, 2).join(' ');
+  isArray(val: any): val is any[] {
+    return Array.isArray(val);
   }
 
   onLike() {
-    const userId = localStorage.getItem('userId');
-    if (!userId || userId === '0') {
-      this.requestRegister.emit();
-      return;
-    }
-
-    // UI logic for toggling like/dislike
-    if (this.likeStatus === 'like') {
-      this.thread.likes--;
-      this.likeStatus = null;
-    } else {
-      if (this.likeStatus === 'dislike') {
-        this.thread.dislikes--;
-      }
-      this.thread.likes++;
-      this.likeStatus = 'like';
-    }
-
-    // Call backend to persist like
-    this.http.post(`http://localhost:5226/api/threads/${this.thread.id}/like`, {})
-      .subscribe();
+    // Implement like logic here
   }
 
   onDislike() {
-    const userId = localStorage.getItem('userId');
-    if (!userId || userId === '0') {
-      this.requestRegister.emit();
+    // Implement dislike logic here
+  }
+
+  onReply() {
+    if (!this.isUserRegistered()) {
+      this.showRegisterModal = true;
       return;
     }
+    this.showReplyBox = true;
+    setTimeout(() => {
+      const textarea = document.querySelector(
+        '.reply-box textarea'
+      ) as HTMLTextAreaElement;
+      if (textarea) textarea.focus();
+    });
+  }
 
-    // UI logic for toggling like/dislike
-    if (this.likeStatus === 'dislike') {
-      this.thread.dislikes--;
-      this.likeStatus = null;
-    } else {
-      if (this.likeStatus === 'like') {
-        this.thread.likes--;
+  onRegisterSuccess() {
+    this.showRegisterModal = false;
+    this.showReplyBox = true;
+    setTimeout(() => {
+      const textarea = document.querySelector(
+        '.reply-box textarea'
+      ) as HTMLTextAreaElement;
+      if (textarea) textarea.focus();
+    });
+  }
+
+  isUserRegistered(): boolean {
+    // Implement your logic (e.g., check localStorage or a user service)
+    return !!localStorage.getItem('userId');
+  }
+
+  submitReply() {
+    const userId = Number(localStorage.getItem('userId')); // or get from your auth/user service
+    const reply: Reply = {
+      content: this.replyText,
+      threadId: this.thread.id,
+      userId: userId
+    };
+
+    this.replyService.createReply(reply).subscribe({
+      next: (created) => {
+        // Optionally update UI, e.g. add to thread.replies
+        this.showReplyBox = false;
+        this.replyText = '';
+      },
+      error: (err) => {
+        console.error('Failed to post reply', err);
       }
-      this.thread.dislikes++;
-      this.likeStatus = 'dislike';
-    }
-
-    // Call backend to persist dislike
-    this.http.post(`http://localhost:5226/api/threads/${this.thread.id}/dislike`, {})
-      .subscribe();
-  }
-
-  onReply(): void {
-    this.showReplyBox = !this.showReplyBox;
-  }
-
-  submitReply(): void {
-    if (this.replyText.trim()) {
-      console.log(`Reply submitted to thread ID: ${this.thread.id} - ${this.replyText}`);
-      // Here you'd typically emit an event or call a service to actually post the reply.
-    } else {
-      console.log(`Reply box closed without input for thread ID: ${this.thread.id}`);
-    }
-
-    this.replyText = '';
-    this.showReplyBox = false;
-  }
-
-  // Add this method to your component class
-  isArray(val: any): val is any[] {
-    return Array.isArray(val);
+    });
   }
 }

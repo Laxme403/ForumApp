@@ -2,9 +2,9 @@ import { PublicUser } from './public-user.model';
 import { Thread } from './thread.model';
 
 export interface Reply {
-  id: number;
+  id?: number;
   content: string;
-  authorname: string;   // username string from DB
+  authorname?: string;   // username string from DB
   threadId: number;
-  userid: number;
+  userId: number;
 }
