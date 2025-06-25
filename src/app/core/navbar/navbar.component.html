@@ -12,7 +12,10 @@
     </li>
     <!-- Show Register button if not registered -->
     <li *ngIf="!isRegistered">
-      <button (click)="openRegister()">Register</button>
+      <button (click)="openRegister()">Sign Up</button>
+    </li>
+    <li *ngIf="!isRegistered">
+      <button (click)="openLogin()">Sign In</button>
     </li>
     <li *ngIf="isRegistered" class="avatar-dropdown-wrapper" style="position: relative;">
       <div class="navbar-avatar" (click)="toggleAvatarDropdown($event)" style="cursor:pointer;">
@@ -31,7 +34,6 @@
 <div class="modal-overlay" *ngIf="showRegister" (click)="closeRegister()"></div>
 <div class="modal" *ngIf="showRegister">
   <app-user-register (registered)="onRegisterSuccess()"></app-user-register>
-  <button class="close-btn" (click)="closeRegister()">Close</button>
 </div>
 
 <div *ngIf="registerSuccess" class="register-success-message">
@@ -48,6 +50,12 @@
   [threads]="userRepliedThreads"
   (close)="showUserRepliesModal = false">
 </app-user-replies-modal>
+
+<!-- Login Modal -->
+<div class="modal-overlay" *ngIf="showLogin" (click)="closeLogin()"></div>
+<div class="modal" *ngIf="showLogin">
+  <app-user-login (loggedIn)="onLoginSuccess($event)"></app-user-login>
+</div>
 
 <ul>
   <li *ngFor="let thread of allThreads">

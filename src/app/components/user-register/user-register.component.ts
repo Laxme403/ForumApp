@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './user-register.component.html',
   styleUrls: ['./user-register.component.scss']
 })
-export class UserRegisterComponent {
+export class UserRegisterComponent implements OnInit {
   @Output() registered = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
   registerForm: FormGroup;
@@ -29,6 +29,10 @@ export class UserRegisterComponent {
     this.usernameForm = this.fb.group({
       username: ['', Validators.required]
     });
+  }
+
+  ngOnInit() {
+    this.registerForm.reset(); // This will clear the form on component load
   }
 
   onSubmit() {
@@ -71,5 +75,10 @@ export class UserRegisterComponent {
 
   onClose() {
     this.close.emit();
+  }
+
+  // If you open the modal multiple times, also call this when opening:
+  resetForm() {
+    this.registerForm.reset();
   }
 }

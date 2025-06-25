@@ -1,37 +1,21 @@
 <!-- Registration Form -->
-<div *ngIf="!showUsernameForm">
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div>
-      <label>Username:</label>
-      <input formControlName="username" required>
-    </div>
-    <div>
-      <label>Email:</label>
-      <input formControlName="email" required type="email">
-    </div>
-    <div>
-      <label>Password:</label>
-      <input formControlName="password" required type="password">
-    </div>
-    <button type="submit" [disabled]="registerForm.invalid">Register</button>
-    <div *ngIf="success" class="success">{{ success }}</div>
-    <div *ngIf="error" class="error">{{ error }}</div>
-  </form>
-  <a href="#" (click)="showUsernameForm = true; $event.preventDefault()">Already a member?</a>
-</div>
+<form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+  <div class="form-group">
+    <label>Username:</label>
+    <input formControlName="username" required autocomplete="off">
+  </div>
+  <div class="form-group">
+    <label>Email:</label>
+    <input formControlName="email" required type="email" autocomplete="off">
+  </div>
+  <div class="form-group">
+    <label>Password:</label>
+    <input formControlName="password" required type="password" autocomplete="new-password">
+  </div>
+  <button type="submit" [disabled]="registerForm.invalid" class="register-btn">Sign Up</button>
+  <div *ngIf="success" class="success">{{ success }}</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</form>
+
 
 <!-- Username-Only Form -->
-<div *ngIf="showUsernameForm">
-  <form [formGroup]="usernameForm" (ngSubmit)="onUsernameSubmit()">
-    <label for="username">Enter your username:</label>
-    <input id="username" formControlName="username" required>
-    <button type="submit" [disabled]="usernameForm.invalid">Fetch Info</button>
-  </form>
-  <a href="#" (click)="showUsernameForm = false; $event.preventDefault()">Back to Register</a>
-  <div *ngIf="fetchedUser">
-    <p><strong>Username:</strong> {{ fetchedUser.username }}</p>
-    <p><strong>Email:</strong> {{ fetchedUser.email }}</p>
-    <!-- Add more fields as needed -->
-  </div>
-  <div *ngIf="error" class="error">{{ error }}</div>
-</div>

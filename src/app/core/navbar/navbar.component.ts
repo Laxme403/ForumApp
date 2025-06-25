@@ -7,6 +7,7 @@ import { Thread } from '../../models/thread.model'; // Import your model
 import { UserThreadsModalComponent } from '../../components/user-threads-modal.component/user-threads-modal.component';
 import { UserRepliesModalComponent } from '../../components/user-replies-modal.component/user-replies-modal.component';
 import { Reply } from '../../models/reply.model'; // Ensure this import exists
+import { UserLoginComponent } from '../../components/user-login/user-login.component'; // Adjust path if needed
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +17,8 @@ import { Reply } from '../../models/reply.model'; // Ensure this import exists
     RouterModule,
     UserRegisterComponent,
     UserThreadsModalComponent, // <-- Add this!
-    UserRepliesModalComponent // <-- Add this!
+    UserRepliesModalComponent, // <-- Add this!
+    UserLoginComponent // <-- Add this line
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
@@ -32,6 +34,8 @@ export class NavbarComponent implements OnInit {
   allThreads: Thread[] = [];
 
   avatarDropdownOpen = false;
+
+  showLogin = false;
 
   constructor(private router: Router, private threadService: ThreadService) {
   
@@ -126,5 +130,23 @@ export class NavbarComponent implements OnInit {
   goToThread(threadId: number, event: Event) {
     event.stopPropagation();
     this.router.navigate(['/thread', threadId]);
+  }
+
+  openLogin() {
+    this.showLogin = true;
+  }
+  closeLogin() {
+    this.showLogin = false;
+  }
+
+  // Called when login is successful
+  onLoginSuccess(user: any) {
+    // Save user info to localStorage
+    localStorage.setItem('userId', user.id);
+    localStorage.setItem('username', user.username);
+    localStorage.setItem('userEmail', user.email);
+    this.showLogin = false;
+    // Optionally, trigger UI update or reload
+    window.location.reload();
   }
 }
