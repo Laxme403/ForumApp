@@ -1,31 +1,37 @@
 <nav class="navbar">
-  <ul class="nav-links">
-    <!-- My Activity button (leftmost), only if registered -->
-    <li *ngIf="isRegistered" class="my-activity-dropdown-wrapper">
-      <button (click)="toggleActivityDropdown($event)">My Activity</button>
-      <ul class="my-activity-menu" *ngIf="showActivityDropdown">
-        <li (click)="onActivityOptionClick('threads')">Threads Posted</li>
-        <li (click)="onActivityOptionClick('replies')">Replies Posted</li>
-        <li (click)="onActivityOptionClick('liked')">Threads Liked</li>
-        <li (click)="onActivityOptionClick('disliked')">Threads Disliked</li>
-      </ul>
+  <ul class="nav-links" style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+    <!-- Center: Search Bar -->
+    <li style="flex: 1; display: flex; justify-content: center;">
+      <div style="display: flex; align-items: center;">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search threads..."
+          class="navbar-search-bar"
+        />
+        <button (click)="onSearch()" style="margin-left: 0.5rem;">Search</button>
+      </div>
     </li>
-    <!-- Show Register button if not registered -->
-    <li *ngIf="!isRegistered">
-      <button (click)="openRegister()">Sign Up</button>
-    </li>
-    <li *ngIf="!isRegistered">
-      <button (click)="openLogin()">Sign In</button>
-    </li>
-    <li *ngIf="isRegistered" class="avatar-dropdown-wrapper" style="position: relative;">
+
+    <!-- Right: Avatar and email (if logged in) -->
+    <li *ngIf="isRegistered" class="avatar-dropdown-wrapper" style="display: flex; align-items: center;">
+      <span class="navbar-email" style="margin-right: 0.5rem;">
+        {{ registeredEmail }}
+      </span>
       <div class="navbar-avatar" (click)="toggleAvatarDropdown($event)" style="cursor:pointer;">
         {{ userInitial }}
       </div>
-      <ul class="avatar-dropdown-menu" *ngIf="avatarDropdownOpen" style="position: absolute; right: 0; top: 100%; background: white; border: 1px solid #eee; list-style: none; margin: 0; padding: 0;">
+      <ul class="avatar-dropdown-menu" *ngIf="avatarDropdownOpen">
         <li>
-          <a href="#" (click)="logout(); $event.preventDefault()" style="display: block; padding: 0.5rem 1rem;">Logout</a>
+          <a href="#" (click)="logout(); $event.preventDefault()">Logout</a>
         </li>
       </ul>
+    </li>
+
+    <!-- Right: Auth buttons (if not logged in) -->
+    <li *ngIf="!isRegistered" style="margin-left: auto; display: flex; gap: 0.5rem;">
+      <button (click)="openRegister()">Sign Up</button>
+      <button (click)="openLogin()">Sign In</button>
     </li>
   </ul>
 </nav>
@@ -39,17 +45,6 @@
 <div *ngIf="registerSuccess" class="register-success-message">
   Successfully registered!
 </div>
-
-<app-user-threads-modal
-  *ngIf="showUserThreadsModal"
-  [threads]="userThreads"
-  (close)="showUserThreadsModal = false">
-</app-user-threads-modal>
-<app-user-replies-modal
-  *ngIf="showUserRepliesModal"
-  [threads]="userRepliedThreads"
-  (close)="showUserRepliesModal = false">
-</app-user-replies-modal>
 
 <!-- Login Modal -->
 <div class="modal-overlay" *ngIf="showLogin" (click)="closeLogin()"></div>

@@ -25,7 +25,7 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="thread-actions">
+    <div class="thread-actions" *ngIf="isRegistered">
       <button class="action-btn like-btn" (click)="onLike()">Like</button>
       <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
       <button class="action-btn reply-btn" (click)="onReply()">Reply</button>

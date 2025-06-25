@@ -28,6 +28,8 @@
     font-size: 2rem;
     color: #222833;
     margin: 0 0 0.5rem 0;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
 
     a {
       color: #222833;
@@ -40,6 +42,10 @@
         color: #1a1d22;
       }
     }
+  }
+
+  .thread-title:hover {
+    text-decoration: underline;
   }
 
   .thread-snippet,

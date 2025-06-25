@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThreadCardComponent } from '../../components/thread-card/thread-card.component';
@@ -25,7 +25,6 @@ import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import 
 })
 export class ThreadListComponent implements OnInit {
   threads: Thread[] = [];
-  searchTerm = '';
   showFilterDropdown = false;
 
   selectedTags: Set<string> = new Set();
@@ -88,6 +87,8 @@ export class ThreadListComponent implements OnInit {
       this.selectedTags.delete(tag);
     }
   }
+
+  @Input() searchTerm: string = '';
 
   get filteredThreads() {
     let filtered = this.threads;
@@ -192,6 +193,14 @@ export class ThreadListComponent implements OnInit {
   get userInitial() {
     const email = localStorage.getItem('userEmail');
     return email ? email.charAt(0).toUpperCase() : '';
+  }
+
+  get isRegistered(): boolean {
+    return !!localStorage.getItem('userEmail');
+  }
+
+  goToMyActivity() {
+    this.router.navigate(['/my-activity']);
   }
 }
 

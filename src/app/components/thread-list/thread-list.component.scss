@@ -40,42 +40,7 @@ li {
     font-weight: bold;
   }
 }
-.filter-btn {
-  height: 38px;  /* same height as search bar */
-  padding: 0 1rem; /* horizontal padding */
-  border: 1px solid white;
-  background: #393E46;
-  border-radius: 6px; /* match search bar */
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.1s ease-in-out;
-  margin-bottom: 0
-}
-.tag-filter-dropdown {
-  border: 1px solid #ccc;
-  background: white;
-  padding: 0.5rem;
-  border-radius: 6px;
-  max-width: 300px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: absolute;
-}
 
-.tag-checkbox {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.tag-checkbox input {
-  margin-right: 0.5rem;
-  cursor: pointer;
-}
 .filter-search-container {
    display: flex;
   align-items: center;
@@ -83,13 +48,6 @@ li {
   margin-bottom: 1rem;
 }
 
-.filter-btn:hover {
-  background-color: #222833;
-  border-color: white;
-}
-.filter-container {
-  position: relative; /* required for dropdown positioning */
-}
 .ask-question-btn {
   position: fixed;
   bottom: 40px;

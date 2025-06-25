@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserRegisterComponent } from '../../components/user-register/user-register.component';
-import { ThreadService } from '../../services/thread.service'; // Import your service
-import { Thread } from '../../models/thread.model'; // Import your model
-import { UserThreadsModalComponent } from '../../components/user-threads-modal.component/user-threads-modal.component';
-import { UserRepliesModalComponent } from '../../components/user-replies-modal.component/user-replies-modal.component';
-import { Reply } from '../../models/reply.model'; // Ensure this import exists
-import { UserLoginComponent } from '../../components/user-login/user-login.component'; // Adjust path if needed
+import { ThreadService } from '../../services/thread.service';
+import { Thread } from '../../models/thread.model';
+import { UserLoginComponent } from '../../components/user-login/user-login.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
@@ -16,9 +14,8 @@ import { UserLoginComponent } from '../../components/user-login/user-login.compo
     CommonModule,
     RouterModule,
     UserRegisterComponent,
-    UserThreadsModalComponent, // <-- Add this!
-    UserRepliesModalComponent, // <-- Add this!
-    UserLoginComponent // <-- Add this line
+    UserLoginComponent,
+    FormsModule
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
@@ -26,20 +23,13 @@ import { UserLoginComponent } from '../../components/user-login/user-login.compo
 export class NavbarComponent implements OnInit {
   showRegister = false;
   registerSuccess = false;
-  showActivityDropdown = false;
-
-  showUserThreadsModal = false; // <-- Add this here
-  showUserRepliesModal = false; // <-- Add this here
-
-  allThreads: Thread[] = [];
-
   avatarDropdownOpen = false;
-
   showLogin = false;
+  allThreads: Thread[] = [];
+  @Output() search = new EventEmitter<string>();
+  searchTerm: string = '';
 
-  constructor(private router: Router, private threadService: ThreadService) {
-  
-  }
+  constructor(private router: Router, private threadService: ThreadService) {}
 
   ngOnInit(): void {
     this.threadService.getThreads().subscribe((threads: Thread[]) => {
@@ -69,11 +59,6 @@ export class NavbarComponent implements OnInit {
     setTimeout(() => this.registerSuccess = false, 3000);
   }
 
-  toggleActivityDropdown(event: Event) {
-    event.stopPropagation();
-    this.showActivityDropdown = !this.showActivityDropdown;
-  }
-
   toggleAvatarDropdown(event: Event) {
     event.stopPropagation();
     this.avatarDropdownOpen = !this.avatarDropdownOpen;
@@ -88,43 +73,11 @@ export class NavbarComponent implements OnInit {
     return email ? email.charAt(0).toUpperCase() : '';
   }
 
- get userThreads(): Thread[] {
-  const username = localStorage.getItem('username');
-  if (!username) return [];
-  return this.allThreads.filter(thread => thread.author === username);
-}
-
-  
-  get likedThreads() {
-    // Return threads liked by user
-    return []; // Replace with actual logic
-  }
-  get dislikedThreads() {
-    // Return threads disliked by user
-    return []; // Replace with actual logic
-  }
-  get userRepliedThreads(): Thread[] {
-    const userId = Number(localStorage.getItem('userId'));
-    if (!userId) return [];
-    return this.allThreads.filter(thread =>
-      thread.replies && (thread.replies as Reply[]).some((reply: Reply) => reply.userId === userId)
-    );
-  }
-
-  onActivityOptionClick(option: string): void {
-    if (option === 'threads') {
-      this.showUserThreadsModal = true;
-    } else if (option === 'replies') {
-      this.showUserRepliesModal = true;
-    }
-    this.showActivityDropdown = false;
-  }
-
   logout(): void {
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
     localStorage.removeItem('userEmail');
-    window.location.reload(); // or this.router.navigate(['/']);
+    window.location.reload();
   }
 
   goToThread(threadId: number, event: Event) {
@@ -139,14 +92,35 @@ export class NavbarComponent implements OnInit {
     this.showLogin = false;
   }
 
-  // Called when login is successful
   onLoginSuccess(user: any) {
-    // Save user info to localStorage
     localStorage.setItem('userId', user.id);
     localStorage.setItem('username', user.username);
     localStorage.setItem('userEmail', user.email);
     this.showLogin = false;
-    // Optionally, trigger UI update or reload
     window.location.reload();
+  }
+
+  get registeredEmail(): string | null {
+    return localStorage.getItem('userEmail');
+  }
+
+  onSearch() {
+    this.search.emit(this.searchTerm);
+  }
+
+  // Only keep this in the component that renders the thread list (e.g., ThreadListComponent)
+  get filteredThreads() {
+    let filtered = this.allThreads;
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(thread =>
+        thread.title.toLowerCase().includes(term)
+      );
+    }
+
+    // ...any other filtering logic (e.g., tags) can follow here...
+
+    return filtered;
   }
 }

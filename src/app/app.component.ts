@@ -12,7 +12,12 @@ import { ThreadListComponent } from './components/thread-list/thread-list.compon
 })
 export class AppComponent implements OnInit {
   title = 'dev-forum-app';
+  searchTerm: string = '';
 
   ngOnInit(): void {
+  }
+
+  onSearch(term: string) {
+    this.searchTerm = term;
   }
 }

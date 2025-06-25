@@ -33,6 +33,8 @@ export class ThreadCardComponent {
   showReplyBox = false;
   replyText = '';
 
+  userVote: 'like' | 'dislike' | null = null;
+
   constructor(
     private router: Router,
     private replyService: ReplyService
@@ -49,18 +51,42 @@ export class ThreadCardComponent {
   }
 
   onLike() {
-    // Implement like logic here
+    if (this.userVote === 'like') return; // Already liked, do nothing
+
+    if (this.userVote === 'dislike') {
+      // Remove previous dislike
+      if (typeof this.thread.dislikes === 'number' && this.thread.dislikes > 0) {
+        this.thread.dislikes--;
+      }
+    }
+
+    if (typeof this.thread.likes === 'number') {
+      this.thread.likes++;
+    } else {
+      this.thread.likes = 1;
+    }
+    this.userVote = 'like';
   }
 
   onDislike() {
-    // Implement dislike logic here
+    if (this.userVote === 'dislike') return; // Already disliked, do nothing
+
+    if (this.userVote === 'like') {
+      // Remove previous like
+      if (typeof this.thread.likes === 'number' && this.thread.likes > 0) {
+        this.thread.likes--;
+      }
+    }
+
+    if (typeof this.thread.dislikes === 'number') {
+      this.thread.dislikes++;
+    } else {
+      this.thread.dislikes = 1;
+    }
+    this.userVote = 'dislike';
   }
 
   onReply() {
-    if (!this.isUserRegistered()) {
-      this.showRegisterModal = true;
-      return;
-    }
     this.showReplyBox = true;
     setTimeout(() => {
       const textarea = document.querySelector(
@@ -81,9 +107,8 @@ export class ThreadCardComponent {
     });
   }
 
-  isUserRegistered(): boolean {
-    // Implement your logic (e.g., check localStorage or a user service)
-    return !!localStorage.getItem('userId');
+  get isRegistered(): boolean {
+    return !!localStorage.getItem('userEmail');
   }
 
   submitReply() {
