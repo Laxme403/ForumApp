@@ -31,6 +31,8 @@ export class ThreadListComponent implements OnInit {
   showThreadCreateModal = false;
   showUserRegisterModal = false;
 
+  selectedThreadId: number | null = null;
+
   constructor(private threadService: ThreadService) {}
 
   fetchThreads() {
@@ -119,6 +121,14 @@ export class ThreadListComponent implements OnInit {
 
   get loggedInUsername() {
     return localStorage.getItem('username') || '';
+  }
+
+  onSelectThread(threadId: number) {
+    this.selectedThreadId = threadId;
+  }
+
+  get selectedThread() {
+    return this.threads.find(t => t.id === this.selectedThreadId) || null;
   }
 }
 

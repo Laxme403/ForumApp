@@ -29,17 +29,27 @@
 
   <!-- Thread List -->
   <div class="thread-list">
-    <ul>
-      <li *ngFor="let thread of filteredThreads">
+    <!-- Blurred background with all thread cards except the selected one -->
+    <div class="thread-list-container" [class.blurred]="selectedThreadId !== null">
+      <app-thread-card
+        *ngFor="let thread of filteredThreads"
+        [thread]="thread"
+        [selectedThreadId]="selectedThreadId"
+        (selectThread)="onSelectThread($event)">
+      </app-thread-card>
+    </div>
+
+    <!-- Modal-like highlighted selected thread card -->
+    <ng-container *ngIf="selectedThreadId !== null && selectedThread">
+      <div class="thread-modal-overlay" (click)="selectedThreadId = null"></div>
+      <div class="thread-modal">
         <app-thread-card
-          [thread]="thread"
-          (requestRegister)="showUserRegisterModal = true">
+          [thread]="selectedThread"
+          [selectedThreadId]="selectedThreadId"
+          (selectThread)="onSelectThread($event)">
         </app-thread-card>
-        <div>
-          Posted by: {{ thread.author }}
-        </div>
-      </li>
-    </ul>
+      </div>
+    </ng-container>
   </div>
 </div>
 

@@ -1,4 +1,7 @@
-<div class="thread-card">
+<div
+  class="thread-card"
+  [class.selected]="thread.id === selectedThreadId"
+  (click)="onCardClick($event)">
   <div class="thread-content">
     <!-- Thread Title -->
     <h3 class="thread-title">
@@ -27,7 +30,9 @@
       <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
       <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
     </div>
-
+  <div class="thread-author">
+  Posted by: {{ thread.author }}
+</div>
     <!-- Registration Modal (pseudo) -->
     <app-user-register
       *ngIf="showRegisterModal"

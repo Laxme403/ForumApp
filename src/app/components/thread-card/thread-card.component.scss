@@ -12,26 +12,38 @@
   align-items: flex-start;
   gap: 1rem;
 
-  .thread-main {
+  // Remove hover effects
+  &:hover {
+    transform: none !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    background-color: #f9f9f9 !important;
+  }
+
+  .thread-content {
     flex: 1;
   }
 
-  .title {
+  .thread-title {
     font-weight: bold;
-    font-size: 5rem;
+    font-size: 2rem;
     color: #222833;
-    cursor: pointer;
-    user-select: none;
-    display: inline-block;
-    text-decoration: none;
-    transition: color 0.3s ease;
+    margin: 0 0 0.5rem 0;
 
-    &:hover {
-      text-decoration: underline;
+    a {
+      color: #222833;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.2s ease-in-out;
+
+      &:hover {
+        text-decoration: underline;
+        color: #1a1d22;
+      }
     }
   }
 
-  .description-preview {
+  .thread-snippet,
+  .thread-description {
     margin-top: 0.5rem;
     font-size: 0.95rem;
     color: #333;
@@ -54,6 +66,23 @@
     }
   }
 
+  .thread-tags {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag-label {
+    background-color: #e0e0e0;
+    color: #555;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    user-select: none;
+    white-space: nowrap;
+  }
+
   .thread-actions {
     margin-top: 0.75rem;
     display: flex;
@@ -70,29 +99,45 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
-  .like-btn {
-    background-color: #393E46;
-    color: white;
-    border: 1px solid #222833;
-  }
-
-  .dislike-btn {
-    background-color: #393E46;
-    color: white;
-    border: 1px solid #222833;
-  }
-
+  .like-btn,
+  .dislike-btn,
   .reply-btn {
-    background-color: #393E46;
+    background-color: #393e46;
     color: white;
     border: 1px solid #222833;
   }
 
   .action-btn:hover {
-  
-  background-color: #222833;
-  border-color: white;
+    background-color: #222833;
+    border-color: white;
+  }
 
+  .reply-box {
+    margin-top: 0.75rem;
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      margin-bottom: 0.5rem;
+    }
+
+    button {
+      background-color: #222833;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #1a1e25;
+      }
+    }
   }
 
   .thread-stats {
@@ -105,72 +150,28 @@
       margin-bottom: 0.4rem;
     }
   }
-  .thread-tags {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+
+  &.selected {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 16px #007bff55;
+    background: #fff;
+    z-index: 2;
+    position: relative;
+  }
+
+  .thread-author {
+    font-size: 0.95rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 1.2rem;
+    margin-left: 0.1rem;
+    align-self: flex-start;
+  }
 }
 
-.tag-label {
-  background-color: #e0e0e0;  // light grey background
-  color: #555;                // dark grey text
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
+// In the parent component's SCSS (e.g., thread-list.component.scss)
+.blurred {
+  filter: blur(4px);
+  pointer-events: none;
   user-select: none;
-  white-space: nowrap;
-}
-.reply-box {
-  margin-top: 0.75rem;
-
-  textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-    margin-bottom: 0.5rem;
-  }
-
-  button {
-    background-color: #222833;
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #1a1e25;
-    }
-  }
-}
-.thread-actions-author {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-}
-
-.thread-author {
-  font-size: 0.85rem;
-  color: #666;
-  font-style: italic;
-  
-}
-.thread-title a {
-  color: #222833;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.2s ease-in-out;
-}
-
-.thread-title a:hover {
-  text-decoration: underline;
-  color: #1a1d22; /* Optional: a slightly darker shade on hover */
-}
-
 }

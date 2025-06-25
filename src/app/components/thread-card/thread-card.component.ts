@@ -13,7 +13,7 @@ import { Reply } from '../../models/reply.model';
   selector: 'app-thread-card',
   standalone: true,
   imports: [
-    UserRegisterComponent, // or UserRegisterModalComponent if that's the correct one
+    UserRegisterComponent,
     CommonModule,
     RouterModule,
     FormsModule,
@@ -24,7 +24,9 @@ import { Reply } from '../../models/reply.model';
 })
 export class ThreadCardComponent {
   @Input() thread!: Thread;
+  @Input() selectedThreadId: number | null = null;
   @Output() requestRegister = new EventEmitter<void>();
+  @Output() selectThread = new EventEmitter<number>();
 
   expanded = false;
   showRegisterModal = false;
@@ -102,5 +104,10 @@ export class ThreadCardComponent {
         console.error('Failed to post reply', err);
       }
     });
+  }
+
+  onCardClick(event: Event) {
+    event.stopPropagation();
+    this.selectThread.emit(this.thread.id);
   }
 }
