@@ -1,17 +1,29 @@
-<div *ngIf="loading">Loading thread details...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<div class="thread-detail-layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <button class="sidebar-btn" (click)="goHome()">Home</button>
+    <button class="sidebar-btn">Questions</button>
+    <button class="sidebar-btn">Replies</button>
+  </nav>
 
-<div *ngIf="thread">
-  <h2>{{ thread.title }}</h2>
-  <p><strong>Author:</strong> {{ thread.author }}</p>
-  <p><strong>Description:</strong> {{ thread.description }}</p>
-  <p><strong>Likes:</strong> {{ thread.likes }} | <strong>Dislikes:</strong> {{ thread.dislikes }}</p>
+  <!-- Main Thread Detail Content -->
+  <div class="thread-detail-main">
+    <div *ngIf="loading">Loading thread details...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
 
-  <h3>Replies</h3>
-  <ul *ngIf="isArray(replies) && replies.length; else noReplies">
-    <li *ngFor="let reply of replies">
-      <strong>{{ reply.authorName }}:</strong> {{ reply.content }}
-    </li>
-  </ul>
-  <ng-template #noReplies>No replies yet.</ng-template>
+    <div *ngIf="thread">
+      <h2>{{ thread.title }}</h2>
+      <p><strong>Author:</strong> {{ thread.author }}</p>
+      <p><strong>Description:</strong> {{ thread.description }}</p>
+      <p><strong>Likes:</strong> {{ thread.likes }} | <strong>Dislikes:</strong> {{ thread.dislikes }}</p>
+
+      <h3>Replies</h3>
+      <ul *ngIf="isArray(replies) && replies.length; else noReplies">
+        <li *ngFor="let reply of replies">
+          <strong>{{ reply.authorName }}:</strong> {{ reply.content }}
+        </li>
+      </ul>
+      <ng-template #noReplies>No replies yet.</ng-template>
+    </div>
+  </div>
 </div>

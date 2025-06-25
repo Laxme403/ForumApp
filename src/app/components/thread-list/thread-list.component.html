@@ -1,55 +1,73 @@
 <div class="thread-list-page">
-  <!-- Search + Filter Row -->
-  <div class="filter-search-container">
-    <!-- Search Bar -->
-    <input
-      type="text"
-      [(ngModel)]="searchTerm"
-      placeholder="Search threads..."
-      class="search-bar"
-    />
+  <div class="thread-list-layout" style="position:relative;">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <button class="sidebar-btn" (click)="goHome()">Home</button>
+      <button class="sidebar-btn" (click)="onQuestionsClick()">Questions</button>
+      <button class="sidebar-btn">Replies</button>
+    </nav>
 
-    <!-- Filter Button + Dropdown Container -->
-    <div class="filter-container">
-      <button class="filter-btn" (click)="toggleFilterDropdown()">Filter</button>
+    <!-- Tag Modal appears next to sidebar -->
+    <app-tag-modal
+      *ngIf="showTagModal"
+      [tags]="allTags"
+      (selectTag)="onTagSelected($event)"
+      (close)="showTagModal = false">
+    </app-tag-modal>
 
-      <!-- Dropdown appears directly under the button -->
-      <div class="tag-filter-dropdown" *ngIf="showFilterDropdown">
-        <label *ngFor="let tag of allTags" class="tag-checkbox">
-          <input
-            type="checkbox"
-            [value]="tag"
-            (change)="toggleTagFilter(tag, $event)"
-          />
-          {{ tag }}
-        </label>
+    <!-- Main Thread List Content -->
+    <div class="thread-list-main">
+      <!-- Search + Filter Row -->
+      <div class="filter-search-container">
+        <!-- Search Bar -->
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search threads..."
+          class="search-bar"
+        />
+
+        <!-- Filter Button + Dropdown Container -->
+        <div class="filter-container">
+          <button class="filter-btn" (click)="toggleFilterDropdown()">Filter</button>
+
+          <!-- Dropdown appears directly under the button -->
+          <div #filterDropdown class="filter-dropdown" *ngIf="showFilterDropdown">
+            <label *ngFor="let tag of allTags" class="tag-checkbox">
+              <input
+                type="checkbox"
+                [value]="tag.name"
+                (change)="toggleTagFilter(tag.name, $event)"
+              />
+              {{ tag.name }}
+            </label>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Thread List -->
-  <div class="thread-list">
-    <!-- Blurred background with all thread cards except the selected one -->
-    <div class="thread-list-container" [class.blurred]="selectedThreadId !== null">
-      <app-thread-card
-        *ngFor="let thread of filteredThreads"
-        [thread]="thread"
-        [selectedThreadId]="selectedThreadId"
-        (selectThread)="onSelectThread($event)">
-      </app-thread-card>
-    </div>
-
-    <!-- Modal-like highlighted selected thread card -->
-    <ng-container *ngIf="selectedThreadId !== null && selectedThread">
-      <div class="thread-modal-overlay" (click)="selectedThreadId = null"></div>
-      <div class="thread-modal">
+      <!-- Thread List -->
+      <div class="thread-list-container" [class.blurred]="selectedThreadId !== null">
+        <!-- Blurred background with all thread cards except the selected one -->
         <app-thread-card
-          [thread]="selectedThread"
+          *ngFor="let thread of filteredThreads"
+          [thread]="thread"
           [selectedThreadId]="selectedThreadId"
           (selectThread)="onSelectThread($event)">
         </app-thread-card>
       </div>
-    </ng-container>
+
+      <!-- Modal-like highlighted selected thread card -->
+      <ng-container *ngIf="selectedThreadId !== null && selectedThread">
+        <div class="thread-modal-overlay" (click)="selectedThreadId = null"></div>
+        <div class="thread-modal">
+          <app-thread-card
+            [thread]="selectedThread"
+            [selectedThreadId]="selectedThreadId"
+            (selectThread)="onSelectThread($event)">
+          </app-thread-card>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThreadCardComponent } from '../../components/thread-card/thread-card.component';
@@ -6,6 +6,8 @@ import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
 import { ThreadCreateComponent } from '../thread-create/thread-create.component'; 
 import { UserRegisterComponent } from '../user-register/user-register.component';
+import { Router } from '@angular/router';
+import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import your modal
 
 @Component({
   selector: 'app-thread-list',
@@ -15,7 +17,8 @@ import { UserRegisterComponent } from '../user-register/user-register.component'
     FormsModule,
     ThreadCardComponent,
     ThreadCreateComponent,
-    UserRegisterComponent
+    UserRegisterComponent,
+    TagModalComponent // Add to imports array in @Component if using standalone
   ],
   templateUrl: './thread-list.component.html',
   styleUrls: ['./thread-list.component.scss']
@@ -25,27 +28,51 @@ export class ThreadListComponent implements OnInit {
   searchTerm = '';
   showFilterDropdown = false;
 
-  allTags: string[] = [];
   selectedTags: Set<string> = new Set();
 
   showThreadCreateModal = false;
   showUserRegisterModal = false;
+  showTagModal = false; // <-- Added showTagModal
 
   selectedThreadId: number | null = null;
 
-  constructor(private threadService: ThreadService) {}
+  allTags: { name: string, description: string }[] = [
+    { name: 'Frontend', description: 'User-facing part of a website or app.' },
+    { name: '.NET', description: 'Microsoft’s framework for building apps.' },
+    { name: 'Angular', description: 'Framework for building web apps.' },
+    { name: 'SQL', description: 'Language to manage database data.' },
+    { name: 'Database', description: 'Stores and organizes data.' },
+    { name: 'C#', description: 'Programming language by Microsoft.' }
+  ];
+
+  @ViewChild('filterDropdown') filterDropdownRef!: ElementRef;
+
+  constructor(private threadService: ThreadService, private router: Router) {}
 
   fetchThreads() {
     this.threadService.getThreads().subscribe((data) => {
-      this.threads = data.map(thread => ({
-        ...thread,
-      }));
-
-      const tagSet = new Set<string>();
-      this.threads.forEach(thread => {
-        (thread.tags as string[]).forEach(tag => tagSet.add(tag));
+      console.log('Fetched threads:', data);
+      this.threads = data.map(thread => {
+        let tags: string[] = [];
+        if (Array.isArray(thread.tags)) {
+          // If it's an array with a single comma-separated string, split it
+          if (
+            thread.tags.length === 1 &&
+            typeof thread.tags[0] === 'string' &&
+            (thread.tags[0] as string).includes(',')
+          ) {
+            tags = (thread.tags[0] as string).split(',').map((t: string) => t.trim());
+          } else {
+            tags = thread.tags.map((t: string) => t.trim());
+          }
+        } else if (typeof thread.tags === 'string') {
+          tags = (thread.tags as string).split(',').map((t: string) => t.trim());
+        }
+        return {
+          ...thread,
+          tags
+        };
       });
-      this.allTags = Array.from(tagSet).sort();
     });
   }
 
@@ -65,15 +92,21 @@ export class ThreadListComponent implements OnInit {
   get filteredThreads() {
     let filtered = this.threads;
 
-    // Filter by selected tags if any tags are selected
     if (this.selectedTags.size > 0) {
-      filtered = filtered.filter(thread =>
-        Array.isArray(thread.tags) &&
-        thread.tags.some(tag => this.selectedTags.has(tag))
-      );
+      const selectedTagsLower = Array.from(this.selectedTags, t => t.toLowerCase().trim());
+      filtered = filtered.filter(thread => {
+        // Normalize thread tags to lowercase and trimmed
+        let threadTags: string[] = [];
+        if (Array.isArray(thread.tags)) {
+          threadTags = thread.tags.map(tag => tag.toLowerCase().trim());
+        } else if (typeof thread.tags === 'string') {
+          threadTags = (thread.tags as string).split(',').map((t: string) => t.toLowerCase().trim());
+        }
+        // Check if ALL selected tags are present in threadTags
+        return selectedTagsLower.every(tag => threadTags.includes(tag));
+      });
     }
 
-    // Filter by search term (only thread titles)
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(thread =>
@@ -129,6 +162,36 @@ export class ThreadListComponent implements OnInit {
 
   get selectedThread() {
     return this.threads.find(t => t.id === this.selectedThreadId) || null;
+  }
+
+  goHome() {
+    this.selectedTags.clear(); // Clear any tag filters
+    this.router.navigate(['/thread-list']); // Use your thread list route
+  }
+
+  onQuestionsClick() {
+    this.showTagModal = true;
+  }
+
+  onTagSelected(tagName: string) {
+    this.selectedTags = new Set([tagName]); // Only the clicked tag is selected
+    this.showTagModal = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.showFilterDropdown &&
+      this.filterDropdownRef &&
+      !this.filterDropdownRef.nativeElement.contains(event.target)
+    ) {
+      this.showFilterDropdown = false;
+    }
+  }
+
+  get userInitial() {
+    const email = localStorage.getItem('userEmail');
+    return email ? email.charAt(0).toUpperCase() : '';
   }
 }
 

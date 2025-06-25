@@ -21,7 +21,7 @@
 
     <!-- Tags -->
     <div class="thread-tags" *ngIf="thread.tags?.length">
-      <span *ngFor="let tag of (isArray(thread.tags) ? thread.tags : thread.tags.split(','))" class="tag-label">{{ tag }}</span>
+      <span *ngFor="let tag of thread.tags" class="tag-label">{{ tag }}</span>
     </div>
 
     <!-- Action Buttons -->

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { ThreadService } from '../../services/thread.service';
@@ -22,7 +22,8 @@ export class ThreadDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private threadService: ThreadService,
-    private replyService: ReplyService
+    private replyService: ReplyService,
+    private router: Router // Add this
   ) {}
 
   ngOnInit() {
@@ -50,5 +51,9 @@ export class ThreadDetailComponent implements OnInit {
 
   isArray(val: any): val is any[] {
     return Array.isArray(val);
+  }
+
+  goHome() {
+    this.router.navigate(['/thread-list']); // Adjust route if needed
   }
 }

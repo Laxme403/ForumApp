@@ -17,7 +17,7 @@ export class ThreadCreateComponent {
   success = '';
   error = '';
 
-  tagOptions = ['frontend', '.net', 'sql', 'angular', 'c#', 'database'];
+  tagOptions = ['Frontend', '.NET', 'SQL', 'Angular', 'C#', 'Database'];
   selectedTags: string[] = [];
 
   constructor(private fb: FormBuilder, private http: HttpClient) {

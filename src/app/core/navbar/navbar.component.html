@@ -1,7 +1,25 @@
 <nav class="navbar">
   <ul class="nav-links">
-    <li><button (click)="navigateTo('/')">Home</button></li>
-    <li><button (click)="openRegister()">Register</button></li>
+    <!-- My Activity button (leftmost), only if registered -->
+    <li *ngIf="isRegistered" class="my-activity-dropdown-wrapper">
+      <button (click)="toggleActivityDropdown($event)">My Activity</button>
+      <ul class="my-activity-menu" *ngIf="showActivityDropdown">
+        <li (click)="onActivityOptionClick('threads')">Threads Posted</li>
+        <li (click)="onActivityOptionClick('replies')">Replies Posted</li>
+        <li (click)="onActivityOptionClick('liked')">Threads Liked</li>
+        <li (click)="onActivityOptionClick('disliked')">Threads Disliked</li>
+      </ul>
+    </li>
+    <!-- Show Register button if not registered -->
+    <li *ngIf="!isRegistered">
+      <button (click)="openRegister()">Register</button>
+    </li>
+    <!-- Show avatar if registered -->
+    <li *ngIf="isRegistered">
+      <div class="navbar-avatar">
+        {{ userInitial }}
+      </div>
+    </li>
   </ul>
 </nav>
 
@@ -15,4 +33,15 @@
 <div *ngIf="registerSuccess" class="register-success-message">
   Successfully registered!
 </div>
+
+<app-user-threads-modal
+  *ngIf="showUserThreadsModal"
+  [threads]="userThreads"
+  (close)="showUserThreadsModal = false">
+</app-user-threads-modal>
+<app-user-replies-modal
+  *ngIf="showUserRepliesModal"
+  [threads]="userRepliedThreads"
+  (close)="showUserRepliesModal = false">
+</app-user-replies-modal>
 

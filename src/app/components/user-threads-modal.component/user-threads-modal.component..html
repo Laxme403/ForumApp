@@ -1,0 +1,11 @@
+<!-- Inside UserThreadsModalComponent -->
+<div class="modal-overlay" (click)="close.emit()"></div>
+<div class="modal">
+  <ul>
+    <li *ngFor="let thread of threads">
+      <span class="thread-link" (click)="goToThread(thread.id, $event)">
+        {{ thread.title }}
+      </span>
+    </li>
+  </ul>
+</div>

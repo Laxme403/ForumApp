@@ -9,6 +9,6 @@ export interface Thread {
   author: string;
   likes: number;
   dislikes: number;
-  tags: string | string[]; // <-- Make sure this is present and typed
+  tags: string[]; // <-- Make sure this is present and typed
   replies: any; // or a more specific type
 }

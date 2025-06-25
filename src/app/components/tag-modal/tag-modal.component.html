@@ -1,0 +1,12 @@
+<div class="modal-overlay" (click)="close.emit()"></div>
+<div class="tag-modal">
+  <div class="tag-list">
+    <div
+      class="tag-card"
+      *ngFor="let tag of tags"
+      (click)="selectTag.emit(tag.name)">
+      <div class="tag-title">{{ tag.name }}</div>
+      <div class="tag-desc">{{ tag.description }}</div>
+    </div>
+  </div>
+</div>
