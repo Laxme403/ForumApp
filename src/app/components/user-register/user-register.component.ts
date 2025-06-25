@@ -14,6 +14,9 @@ export class UserRegisterComponent {
   @Output() registered = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
   registerForm: FormGroup;
+  usernameForm: FormGroup;
+  showUsernameForm = false;
+  fetchedUser: any = null;
   success = '';
   error = '';
 
@@ -23,18 +26,19 @@ export class UserRegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+    this.usernameForm = this.fb.group({
+      username: ['', Validators.required]
+    });
   }
 
   onSubmit() {
-    console.log('Register form submitted', this.registerForm.value);
     if (this.registerForm.valid) {
       this.http.post('http://localhost:5226/api/users/register', this.registerForm.value)
         .subscribe({
           next: (response: any) => {
-            const registeredEmail = response.email; // Assuming the response contains the registered email
             localStorage.setItem('username', response.username);
-            localStorage.setItem('userId', response.id); // Make sure response.id is the user ID!
-            localStorage.setItem('userEmail', registeredEmail);
+            localStorage.setItem('userId', response.id);
+            localStorage.setItem('userEmail', response.email);
             this.registerForm.reset();
             this.onRegisterSuccess();
           },
@@ -44,6 +48,21 @@ export class UserRegisterComponent {
           }
         });
     }
+  }
+
+  onUsernameSubmit() {
+    const username = this.usernameForm.value.username;
+    this.http.get(`http://localhost:5226/api/users/by-username/${username}`)
+      .subscribe({
+        next: (user: any) => {
+          this.fetchedUser = user;
+          this.error = '';
+        },
+        error: err => {
+          this.fetchedUser = null;
+          this.error = err.error?.message || 'User not found';
+        }
+      });
   }
 
   onRegisterSuccess() {

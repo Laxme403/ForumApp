@@ -110,4 +110,9 @@ export class ThreadCardComponent {
     event.stopPropagation();
     this.selectThread.emit(this.thread.id);
   }
+
+  onTitleClick(event: MouseEvent) {
+    event.stopPropagation();
+    this.selectThread.emit(this.thread.id);
+  }
 }

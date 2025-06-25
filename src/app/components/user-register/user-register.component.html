@@ -1,17 +1,37 @@
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label>Username:</label>
-    <input formControlName="username" required>
+<!-- Registration Form -->
+<div *ngIf="!showUsernameForm">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label>Username:</label>
+      <input formControlName="username" required>
+    </div>
+    <div>
+      <label>Email:</label>
+      <input formControlName="email" required type="email">
+    </div>
+    <div>
+      <label>Password:</label>
+      <input formControlName="password" required type="password">
+    </div>
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    <div *ngIf="success" class="success">{{ success }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+  <a href="#" (click)="showUsernameForm = true; $event.preventDefault()">Already a member?</a>
+</div>
+
+<!-- Username-Only Form -->
+<div *ngIf="showUsernameForm">
+  <form [formGroup]="usernameForm" (ngSubmit)="onUsernameSubmit()">
+    <label for="username">Enter your username:</label>
+    <input id="username" formControlName="username" required>
+    <button type="submit" [disabled]="usernameForm.invalid">Fetch Info</button>
+  </form>
+  <a href="#" (click)="showUsernameForm = false; $event.preventDefault()">Back to Register</a>
+  <div *ngIf="fetchedUser">
+    <p><strong>Username:</strong> {{ fetchedUser.username }}</p>
+    <p><strong>Email:</strong> {{ fetchedUser.email }}</p>
+    <!-- Add more fields as needed -->
   </div>
-  <div>
-    <label>Email:</label>
-    <input formControlName="email" required type="email">
-  </div>
-  <div>
-    <label>Password:</label>
-    <input formControlName="password" required type="password">
-  </div>
-  <button type="submit" [disabled]="registerForm.invalid">Register</button>
-  <div *ngIf="success" class="success">{{ success }}</div>
   <div *ngIf="error" class="error">{{ error }}</div>
-</form>
+</div>

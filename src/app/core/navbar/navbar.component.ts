@@ -6,6 +6,7 @@ import { ThreadService } from '../../services/thread.service'; // Import your se
 import { Thread } from '../../models/thread.model'; // Import your model
 import { UserThreadsModalComponent } from '../../components/user-threads-modal.component/user-threads-modal.component';
 import { UserRepliesModalComponent } from '../../components/user-replies-modal.component/user-replies-modal.component';
+import { Reply } from '../../models/reply.model'; // Ensure this import exists
 
 @Component({
   selector: 'app-navbar',
@@ -30,6 +31,8 @@ export class NavbarComponent implements OnInit {
 
   allThreads: Thread[] = [];
 
+  avatarDropdownOpen = false;
+
   constructor(private router: Router, private threadService: ThreadService) {
   
   }
@@ -39,6 +42,8 @@ export class NavbarComponent implements OnInit {
       this.allThreads = threads;
       console.log('Fetched threads:', threads);
     });
+
+    window.addEventListener('click', () => this.avatarDropdownOpen = false);
   }
 
   navigateTo(path: string): void {
@@ -65,6 +70,11 @@ export class NavbarComponent implements OnInit {
     this.showActivityDropdown = !this.showActivityDropdown;
   }
 
+  toggleAvatarDropdown(event: Event) {
+    event.stopPropagation();
+    this.avatarDropdownOpen = !this.avatarDropdownOpen;
+  }
+
   get isRegistered(): boolean {
     return !!localStorage.getItem('userEmail');
   }
@@ -74,16 +84,13 @@ export class NavbarComponent implements OnInit {
     return email ? email.charAt(0).toUpperCase() : '';
   }
 
-  // Dummy data for demonstration; replace with real data fetching logic
-  get userThreads(): Thread[] {
-    const username = localStorage.getItem('username');
-    if (!username) return [];
-    return this.allThreads.filter(thread => thread.author === username);
-  }
-  get userReplies() {
-    // Return replies where reply.userId === currentUserId
-    return []; // Replace with actual logic
-  }
+ get userThreads(): Thread[] {
+  const username = localStorage.getItem('username');
+  if (!username) return [];
+  return this.allThreads.filter(thread => thread.author === username);
+}
+
+  
   get likedThreads() {
     // Return threads liked by user
     return []; // Replace with actual logic
@@ -93,11 +100,10 @@ export class NavbarComponent implements OnInit {
     return []; // Replace with actual logic
   }
   get userRepliedThreads(): Thread[] {
-    const username = localStorage.getItem('username');
-    if (!username) return [];
-    // Assumes each thread has a 'replies' array with a 'username' property
+    const userId = Number(localStorage.getItem('userId'));
+    if (!userId) return [];
     return this.allThreads.filter(thread =>
-      thread.replies && thread.replies.some(reply => reply.authorName=== username)
+      thread.replies && (thread.replies as Reply[]).some((reply: Reply) => reply.userId === userId)
     );
   }
 
@@ -108,5 +114,17 @@ export class NavbarComponent implements OnInit {
       this.showUserRepliesModal = true;
     }
     this.showActivityDropdown = false;
+  }
+
+  logout(): void {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userEmail');
+    window.location.reload(); // or this.router.navigate(['/']);
+  }
+
+  goToThread(threadId: number, event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/thread', threadId]);
   }
 }

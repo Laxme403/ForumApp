@@ -14,11 +14,15 @@
     <li *ngIf="!isRegistered">
       <button (click)="openRegister()">Register</button>
     </li>
-    <!-- Show avatar if registered -->
-    <li *ngIf="isRegistered">
-      <div class="navbar-avatar">
+    <li *ngIf="isRegistered" class="avatar-dropdown-wrapper" style="position: relative;">
+      <div class="navbar-avatar" (click)="toggleAvatarDropdown($event)" style="cursor:pointer;">
         {{ userInitial }}
       </div>
+      <ul class="avatar-dropdown-menu" *ngIf="avatarDropdownOpen" style="position: absolute; right: 0; top: 100%; background: white; border: 1px solid #eee; list-style: none; margin: 0; padding: 0;">
+        <li>
+          <a href="#" (click)="logout(); $event.preventDefault()" style="display: block; padding: 0.5rem 1rem;">Logout</a>
+        </li>
+      </ul>
     </li>
   </ul>
 </nav>
@@ -44,4 +48,12 @@
   [threads]="userRepliedThreads"
   (close)="showUserRepliesModal = false">
 </app-user-replies-modal>
+
+<ul>
+  <li *ngFor="let thread of allThreads">
+    <span class="thread-link" (click)="goToThread(thread.id, $event)">
+      {{ thread.title }}
+    </span>
+  </li>
+</ul>
 

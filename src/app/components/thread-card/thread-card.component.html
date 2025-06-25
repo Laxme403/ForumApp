@@ -1,13 +1,13 @@
 <div
   class="thread-card"
-  [class.selected]="thread.id === selectedThreadId"
-  (click)="onCardClick($event)">
+  [class.selected]="thread.id === selectedThreadId">
+
   <div class="thread-content">
     <!-- Thread Title -->
     <h3 class="thread-title">
-      <a [routerLink]="['/thread', thread.id]">
+      <span class="thread-title-clickable" (click)="onTitleClick($event)">
         {{ thread.title }}
-      </a>
+      </span>
     </h3>
 
     <!-- Description: Show preview or full based on expanded -->
