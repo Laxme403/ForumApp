@@ -52,11 +52,5 @@
   <app-user-login (loggedIn)="onLoginSuccess($event)"></app-user-login>
 </div>
 
-<ul>
-  <li *ngFor="let thread of allThreads">
-    <span class="thread-link" (click)="goToThread(thread.id, $event)">
-      {{ thread.title }}
-    </span>
-  </li>
-</ul>
+
 

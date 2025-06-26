@@ -1,29 +1,53 @@
 <div class="thread-detail-layout">
   <!-- Sidebar -->
-  <nav class="sidebar">
-    <button class="sidebar-btn" (click)="goHome()">Home</button>
-    <button class="sidebar-btn">Questions</button>
-    <button class="sidebar-btn">Replies</button>
-  </nav>
+  <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
+
+  <app-tag-modal
+    *ngIf="showTagModal"
+    [tags]="allTags"
+    (selectTag)="onTagSelected($event)"
+    (close)="showTagModal = false">
+  </app-tag-modal>
 
   <!-- Main Thread Detail Content -->
   <div class="thread-detail-main">
     <div *ngIf="loading">Loading thread details...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
 
-    <div *ngIf="thread">
-      <h2>{{ thread.title }}</h2>
-      <p><strong>Author:</strong> {{ thread.author }}</p>
-      <p><strong>Description:</strong> {{ thread.description }}</p>
-      <p><strong>Likes:</strong> {{ thread.likes }} | <strong>Dislikes:</strong> {{ thread.dislikes }}</p>
-
-      <h3>Replies</h3>
-      <ul *ngIf="isArray(replies) && replies.length; else noReplies">
-        <li *ngFor="let reply of replies">
-          <strong>{{ reply.authorName }}:</strong> {{ reply.content }}
-        </li>
-      </ul>
-      <ng-template #noReplies>No replies yet.</ng-template>
+    <div *ngIf="thread" class="thread-detail-3d">
+      <h2 class="thread-detail-title">{{ thread.title }}</h2>
+      <div class="thread-description-scroll">
+        {{ thread.description }}
+      </div>
+      <div class="thread-author-detail">
+        <strong>Author:</strong> {{ thread.author }}
+      </div>
+      <div class="thread-actions-horizontal">
+        <button class="action-btn like-btn" (click)="onLike()">Like</button>
+        <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
+        <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
+        <button
+          *ngIf="isLoggedInUserAuthor()"
+          class="action-btn edit-btn"
+          (click)="onEdit()"
+        >Edit</button>
+        <button
+          *ngIf="isLoggedInUserAuthor()"
+          class="action-btn delete-btn"
+          (click)="onDelete()"
+        >Delete</button>
+      </div>
+      <div class="replies-scroll">
+        <div *ngIf="isArray(replies) && replies.length; else noReplies">
+          <div *ngFor="let reply of replies" class="reply-card">
+            <div class="reply-author">{{ reply.authorName }}</div>
+            <div class="reply-content">{{ reply.content }}</div>
+          </div>
+        </div>
+        <ng-template #noReplies>
+          <div class="no-replies">No replies yet.</div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

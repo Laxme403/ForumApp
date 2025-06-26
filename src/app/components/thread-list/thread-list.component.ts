@@ -6,8 +6,9 @@ import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
 import { ThreadCreateComponent } from '../thread-create/thread-create.component'; 
 import { UserRegisterComponent } from '../user-register/user-register.component';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import your modal
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-thread-list',
@@ -18,7 +19,8 @@ import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import 
     ThreadCardComponent,
     ThreadCreateComponent,
     UserRegisterComponent,
-    TagModalComponent // Add to imports array in @Component if using standalone
+    TagModalComponent,
+    SidebarComponent // <-- Add this line
   ],
   templateUrl: './thread-list.component.html',
   styleUrls: ['./thread-list.component.scss']
@@ -46,7 +48,11 @@ export class ThreadListComponent implements OnInit {
 
   @ViewChild('filterDropdown') filterDropdownRef!: ElementRef;
 
-  constructor(private threadService: ThreadService, private router: Router) {}
+  constructor(
+    private threadService: ThreadService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   fetchThreads() {
     this.threadService.getThreads().subscribe((data) => {
@@ -76,7 +82,13 @@ export class ThreadListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchThreads();
+    this.route.queryParams.subscribe(params => {
+      const tag = params['tag'];
+      if (tag) {
+        this.selectedTags = new Set([tag]);
+      }
+      this.fetchThreads();
+    });
   }
 
   toggleTagFilter(tag: string, event: Event): void {
@@ -165,11 +177,6 @@ export class ThreadListComponent implements OnInit {
     return this.threads.find(t => t.id === this.selectedThreadId) || null;
   }
 
-  goHome() {
-    this.selectedTags.clear(); // Clear any tag filters
-    this.router.navigate(['/thread-list']); // Use your thread list route
-  }
-
   onQuestionsClick() {
     this.showTagModal = true;
   }
@@ -197,10 +204,6 @@ export class ThreadListComponent implements OnInit {
 
   get isRegistered(): boolean {
     return !!localStorage.getItem('userEmail');
-  }
-
-  goToMyActivity() {
-    this.router.navigate(['/my-activity']);
   }
 }
 

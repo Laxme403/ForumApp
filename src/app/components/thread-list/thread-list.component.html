@@ -1,11 +1,6 @@
 <div class="thread-list-page">
   <div class="thread-list-layout" style="position:relative;">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <button class="sidebar-btn" (click)="goHome()">Home</button>
-      <button class="sidebar-btn" (click)="onQuestionsClick()">Questions</button>
-      <button *ngIf="isRegistered" class="sidebar-btn" (click)="goToMyActivity()">My Activity</button>
-    </nav>
+    <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
 
     <!-- Tag Modal appears next to sidebar -->
     <app-tag-modal
@@ -17,10 +12,8 @@
 
     <!-- Main Thread List Content -->
     <div class="thread-list-main">
-      <!-- Removed Search + Filter Row -->
       <!-- Thread List -->
       <div class="thread-list-container" [class.blurred]="selectedThreadId !== null">
-        <!-- Blurred background with all thread cards except the selected one -->
         <app-thread-card
           *ngFor="let thread of filteredThreads"
           [thread]="thread"

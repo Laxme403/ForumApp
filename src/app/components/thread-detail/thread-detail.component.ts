@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+import { SidebarComponent } from '../sidebar/sidebar.component'; // <-- Import SidebarComponent
+import { TagModalComponent } from '../tag-modal/tag-modal.component';
 
 import { ThreadService } from '../../services/thread.service';
 import { ReplyService } from '../../services/reply.service';
@@ -8,10 +12,10 @@ import { Reply } from '../../models/reply.model';
 
 @Component({
   selector: 'app-thread-detail',
-  templateUrl: './thread-detail.component.html',
-  styleUrls: ['./thread-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, SidebarComponent, TagModalComponent], // <-- Add SidebarComponent here
+  templateUrl: './thread-detail.component.html',
+  styleUrls: ['./thread-detail.component.scss']
 })
 export class ThreadDetailComponent implements OnInit {
   thread: any;
@@ -19,11 +23,22 @@ export class ThreadDetailComponent implements OnInit {
   loading = true;
   error = '';
 
+  showTagModal = false;
+
+  allTags = [
+    { name: 'Frontend', description: 'User-facing part of a website or app.' },
+    { name: '.NET', description: 'Microsoft’s framework for building apps.' },
+    { name: 'Angular', description: 'Framework for building web apps.' },
+    { name: 'SQL', description: 'Language to manage database data.' },
+    { name: 'Database', description: 'Stores and organizes data.' },
+    { name: 'C#', description: 'Programming language by Microsoft.' }
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private threadService: ThreadService,
     private replyService: ReplyService,
-    private router: Router // Add this
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -53,7 +68,38 @@ export class ThreadDetailComponent implements OnInit {
     return Array.isArray(val);
   }
 
-  goHome() {
-    this.router.navigate(['/thread-list']); // Adjust route if needed
+  onQuestionsClick() {
+    this.showTagModal = true;
+  }
+
+  onTagSelected(tagName: string) {
+    this.showTagModal = false;
+    // Redirect to thread list with tag as query param
+    this.router.navigate(['/'], { queryParams: { tag: tagName } });
+  }
+
+  isLoggedInUserAuthor(): boolean {
+    const username = localStorage.getItem('username');
+    return this.thread && this.thread.author === username;
+  }
+
+  onEdit() {
+    // Edit logic here
+  }
+
+  onDelete() {
+    // Delete logic here
+  }
+
+  onLike() {
+    // Implement like logic here
+  }
+
+  onDislike() {
+    // Implement dislike logic here
+  }
+
+  onReply() {
+    // Implement reply logic here
   }
 }

@@ -1,0 +1,27 @@
+<div class="my-activity-layout">
+  <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
+
+  <app-tag-modal
+    *ngIf="showTagModal"
+    [tags]="allTags"
+    (selectTag)="onTagSelected($event)"
+    (close)="showTagModal = false">
+  </app-tag-modal>
+
+  <div class="my-activity-main">
+    <div class="activity-columns">
+      <div class="activity-column">
+        <h2 class="activity-title">Threads Posted</h2>
+        <div *ngFor="let thread of userThreads"
+             class="thread-title-3d"
+             (click)="router.navigate(['/thread-detail', thread.id])">
+          {{ thread.title }}
+        </div>
+      </div>
+      <div class="activity-column">
+        <h2 class="activity-title">Comments Posted</h2>
+        <!-- List of comments posted by the user goes here -->
+      </div>
+    </div>
+  </div>
+</div>

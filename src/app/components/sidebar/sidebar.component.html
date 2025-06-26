@@ -1,0 +1,11 @@
+<nav class="sidebar">
+  <button class="sidebar-btn" (click)="goHome()">Home</button>
+  <button class="sidebar-btn" (click)="onQuestionsClick()">Questions</button>
+  <button
+    class="sidebar-btn"
+    *ngIf="isRegistered"
+    (click)="goToMyActivity()"
+  >
+    My Activity
+  </button>
+</nav>

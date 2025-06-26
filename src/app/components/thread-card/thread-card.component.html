@@ -13,7 +13,7 @@
     <!-- Description: Show preview or full based on expanded -->
     <p class="thread-snippet" *ngIf="!expanded">
       {{ getPreview(thread.description) }}
-      <a href="#" (click)="expanded = true; $event.preventDefault()">Read more</a>
+      <a [routerLink]="['/thread-detail', thread.id]">Read more</a>
     </p>
     <p class="thread-description" *ngIf="expanded">
       {{ thread.description }}

@@ -1,0 +1,68 @@
+.my-activity-layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.my-activity-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 2rem 2rem 2rem 0;
+}
+
+.activity-columns {
+  display: flex;
+  gap: 2rem;
+}
+
+.activity-column {
+  flex: 1 1 0;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1.5px solid #bfc7d1; // changed border color for the column
+  box-shadow:
+    0 4px 16px rgba(34, 40, 51, 0.13),
+    0 1.5px 4px rgba(34, 40, 51, 0.10);
+  transition: box-shadow 0.2s;
+  max-height: 500px; // adjust as needed
+  overflow-y: auto;  // enables vertical scroll if content overflows
+}
+
+.activity-title {
+  font-size: 2.4rem; // increased size
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  color: #222833; // updated color
+  letter-spacing: 0.01em;
+}
+
+.thread-title-3d {
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 1.1rem;
+  padding: 1rem 1.3rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #222833;
+  box-shadow:
+    0 4px 16px rgba(34, 40, 51, 0.13),
+    0 1.5px 4px rgba(34, 40, 51, 0.10);
+  transition: 
+    box-shadow 0.2s,
+    transform 0.25s cubic-bezier(.25,.8,.25,1),
+    text-decoration 0.2s;
+  cursor: pointer;
+  user-select: none;
+  will-change: transform;
+  border: 1.5px solid #bfc7d1; // changed border color for each title
+  outline: none;
+}
+
+.thread-title-3d:hover, .thread-title-3d:focus {
+  box-shadow:
+    0 8px 32px rgba(34, 40, 51, 0.18),
+    0 3px 12px rgba(34, 40, 51, 0.13);
+  transform: translateZ(18px) scale(1.03);
+  text-decoration: underline;
+  color: #222833;
+}
