@@ -1,4 +1,53 @@
-.login-form {
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  min-width: 340px;
+  max-width: 95vw;
+  width: 100%;
+  min-height: 220px;
+  position: relative;
+  box-shadow: none; /* No shadow */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.modal-close {
+  font-size: 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  color: #888;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #e53935;
+}
+
+.modal-form, .login-form, .register-form {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -6,6 +55,8 @@
   align-items: stretch;
   justify-content: flex-end;
   height: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -22,13 +73,14 @@
 
 .form-group input {
   width: 100%;
+  box-sizing: border-box;
   padding: 0.5rem;
   font-size: 1rem;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
 
-.login-btn {
+.login-btn, .register-btn {
   margin: 2rem auto 0 auto;
   display: block;
   padding: 0.7rem 2.5rem;
@@ -40,7 +92,7 @@
   cursor: pointer;
 }
 
-.login-btn:disabled {
+.login-btn:disabled, .register-btn:disabled {
   background: #b3d7ff;
   cursor: not-allowed;
 }

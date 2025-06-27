@@ -1,18 +1,19 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../services/user.service'; // Adjust path as needed
+import { UserService } from '../../services/user.service';
 import { OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- Add this import
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // <-- Add CommonModule here
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss']
 })
-export class UserLoginComponent {
+export class UserLoginComponent implements OnInit {
   @Output() loggedIn = new EventEmitter<any>();
+  @Output() closeModal = new EventEmitter<void>(); // Add this output for closing modal
   loginForm: FormGroup;
   error: string | null = null;
 
@@ -22,8 +23,9 @@ export class UserLoginComponent {
       password: ['', Validators.required]
     });
   }
+
   ngOnInit() {
-    this.loginForm.reset(); // This will clear any previous values
+    this.loginForm.reset();
   }
 
   onSubmit() {
@@ -40,7 +42,12 @@ export class UserLoginComponent {
       }
     });
   }
-   resetForm() {
+
+  resetForm() {
     this.loginForm.reset();
+  }
+
+  close() {
+    this.closeModal.emit();
   }
 }

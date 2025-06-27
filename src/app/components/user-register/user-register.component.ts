@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class UserRegisterComponent implements OnInit {
   @Output() registered = new EventEmitter<void>();
-  @Output() close = new EventEmitter<void>();
+  @Output() closeModal = new EventEmitter<void>();
   registerForm: FormGroup;
   usernameForm: FormGroup;
   showUsernameForm = false;
@@ -73,8 +73,8 @@ export class UserRegisterComponent implements OnInit {
     this.registered.emit();
   }
 
-  onClose() {
-    this.close.emit();
+  close() {
+    this.closeModal.emit();
   }
 
   // If you open the modal multiple times, also call this when opening:
