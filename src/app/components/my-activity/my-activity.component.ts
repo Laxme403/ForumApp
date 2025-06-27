@@ -19,6 +19,8 @@ export class MyActivityComponent implements OnInit {
   showTagModal = false;
   threads: Thread[] = [];
   replies: Reply[] = [];
+  threadsUserLiked: Thread[] = [];
+  threadsUserDisliked: Thread[] = [];
 
   constructor(
     public router: Router,
@@ -32,6 +34,13 @@ export class MyActivityComponent implements OnInit {
     });
     this.replyService.getReplies().subscribe((data: Reply[]) => {
       this.replies = data;
+    });
+    const userId = Number(localStorage.getItem('userId'));
+    this.threadService.getThreadsLikedByUser(userId).subscribe(threads => {
+      this.threadsUserLiked = threads;
+    });
+    this.threadService.getThreadsDislikedByUser(userId).subscribe(threads => {
+      this.threadsUserDisliked = threads;
     });
   }
 

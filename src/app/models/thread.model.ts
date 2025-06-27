@@ -12,4 +12,5 @@ export interface Thread {
   tags: string[]; // <-- Make sure this is present and typed
   replies: any; // or a more specific type
   deleteindex: number; // 0 = active, 1 = deleted
+  createdAt: string; // <-- Added field
 }

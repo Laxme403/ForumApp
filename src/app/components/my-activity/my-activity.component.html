@@ -15,7 +15,8 @@
         <div *ngFor="let thread of userThreads"
              class="thread-title-3d"
              (click)="router.navigate(['/thread-detail', thread.id])">
-          {{ thread.title }}
+          <div class="thread-title">{{ thread.title }}</div>
+          <div class="thread-date">Created at: {{ thread.createdAt | date:'medium' }}</div>
         </div>
       </div>
       <div class="activity-column">
@@ -23,7 +24,26 @@
         <div *ngFor="let thread of threadsUserRepliedTo"
              class="thread-title-3d"
              (click)="router.navigate(['/thread-detail', thread.id])">
-          {{ thread.title }}
+          <div class="thread-title">{{ thread.title }}</div>
+          <div class="thread-date">Created at: {{ thread.createdAt | date:'medium' }}</div>
+        </div>
+      </div>
+      <div class="activity-column">
+        <h2 class="activity-title">Threads Liked</h2>
+        <div *ngFor="let thread of threadsUserLiked"
+             class="thread-title-3d"
+             (click)="router.navigate(['/thread-detail', thread.id])">
+          <div class="thread-title">{{ thread.title }}</div>
+          <div class="thread-date">Created at: {{ thread.createdAt | date:'medium' }}</div>
+        </div>
+      </div>
+      <div class="activity-column">
+        <h2 class="activity-title">Threads Disliked</h2>
+        <div *ngFor="let thread of threadsUserDisliked"
+             class="thread-title-3d"
+             (click)="router.navigate(['/thread-detail', thread.id])">
+          <div class="thread-title">{{ thread.title }}</div>
+          <div class="thread-date">Created at: {{ thread.createdAt | date:'medium' }}</div>
         </div>
       </div>
     </div>

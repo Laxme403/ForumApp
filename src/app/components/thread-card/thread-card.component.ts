@@ -5,9 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { Thread } from '../../models/thread.model';
 import { HttpClientModule } from '@angular/common/http';
 import { UserRegisterComponent } from '../../components/user-register/user-register.component'; // adjust path as needed
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ReplyService } from '../../services/reply.service'; // adjust path as needed
 import { Reply } from '../../models/reply.model';
+import { ThreadService } from '../../services/thread.service';
 
 @Component({
   selector: 'app-thread-card',
@@ -36,8 +37,10 @@ export class ThreadCardComponent {
   userVote: 'like' | 'dislike' | null = null;
 
   constructor(
-    private router: Router,
-    private replyService: ReplyService
+    private route: ActivatedRoute,
+    private threadService: ThreadService,
+    private replyService: ReplyService,
+    private router: Router
   ) {}
 
   getPreview(description: string): string {
@@ -51,39 +54,41 @@ export class ThreadCardComponent {
   }
 
   onLike() {
-    if (this.userVote === 'like') return; // Already liked, do nothing
+    const userId = Number(localStorage.getItem('userId'));
+    if (!userId) return;
 
-    if (this.userVote === 'dislike') {
-      // Remove previous dislike
-      if (typeof this.thread.dislikes === 'number' && this.thread.dislikes > 0) {
-        this.thread.dislikes--;
+    // If already liked, do nothing
+    if (this.userVote === 'like') return;
+
+    this.threadService.likeThread(this.thread.id, userId).subscribe({
+      next: (res) => {
+        this.thread.likes = res.likes;
+        this.thread.dislikes = res.dislikes;
+        this.userVote = 'like';
+      },
+      error: (err) => {
+        console.error('Failed to like thread', err);
       }
-    }
-
-    if (typeof this.thread.likes === 'number') {
-      this.thread.likes++;
-    } else {
-      this.thread.likes = 1;
-    }
-    this.userVote = 'like';
+    });
   }
 
   onDislike() {
-    if (this.userVote === 'dislike') return; // Already disliked, do nothing
+    const userId = Number(localStorage.getItem('userId'));
+    if (!userId) return;
 
-    if (this.userVote === 'like') {
-      // Remove previous like
-      if (typeof this.thread.likes === 'number' && this.thread.likes > 0) {
-        this.thread.likes--;
+    // If already disliked, do nothing
+    if (this.userVote === 'dislike') return;
+
+    this.threadService.dislikeThread(this.thread.id, userId).subscribe({
+      next: (res) => {
+        this.thread.likes = res.likes;
+        this.thread.dislikes = res.dislikes;
+        this.userVote = 'dislike';
+      },
+      error: (err) => {
+        console.error('Failed to dislike thread', err);
       }
-    }
-
-    if (typeof this.thread.dislikes === 'number') {
-      this.thread.dislikes++;
-    } else {
-      this.thread.dislikes = 1;
-    }
-    this.userVote = 'dislike';
+    });
   }
 
   onReply() {

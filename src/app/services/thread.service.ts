@@ -36,4 +36,20 @@ export class ThreadService {
     // Use the correct endpoint for soft delete
     return this.http.put(`${this.apiUrl}/threads/${threadId}/soft-delete`, { deleteindex: 1 });
   }
+
+  getThreadsLikedByUser(userId: number): Observable<Thread[]> {
+    return this.http.get<Thread[]>(`${this.apiUrl}/threads/liked/${userId}`);
+  }
+
+  getThreadsDislikedByUser(userId: number): Observable<Thread[]> {
+    return this.http.get<Thread[]>(`${this.apiUrl}/threads/disliked/${userId}`);
+  }
+
+  likeThread(threadId: number, userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/threads/${threadId}/like`, { userId });
+  }
+
+  dislikeThread(threadId: number, userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/threads/${threadId}/dislike`, { userId });
+  }
 }
