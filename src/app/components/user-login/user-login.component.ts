@@ -30,8 +30,14 @@ export class UserLoginComponent {
     if (this.loginForm.invalid) return;
     const { email, password } = this.loginForm.value;
     this.userService.login(email, password).subscribe({
-      next: user => this.loggedIn.emit(user),
-      error: err => this.error = 'Invalid email or password'
+      next: (response) => {
+        console.log('Login response:', response);
+        this.loggedIn.emit(response);
+      },
+      error: (err) => {
+        console.error('Login failed:', err);
+        this.error = 'Invalid email or password';
+      }
     });
   }
    resetForm() {

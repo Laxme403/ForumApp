@@ -32,6 +32,6 @@ export class UserService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post<any>('/api/users/login', { email, password });
+    return this.http.post<any>('http://localhost:5226/api/users/login', { email, password });
   }
 }

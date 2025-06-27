@@ -1,0 +1,14 @@
+<div class="thread-list-page">
+  <div class="thread-list-layout" style="position:relative;">
+    <app-sidebar></app-sidebar>
+    <div class="thread-list-main">
+      <div class="thread-list-container">
+        <app-admin-thread-card
+          *ngFor="let thread of threads"
+          [thread]="thread"
+          (delete)="onDeleteThread($event)">
+        </app-admin-thread-card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+@import '../thread-card/thread-card.component.scss'; // Reuse thread card styles
+
+// Optionally, add or override delete button styles if needed
+.delete-btn {
+  background-color: #e53935;
+  color: #fff;
+  border: 1px solid #b71c1c;
+}
+
+.delete-btn:hover {
+  background-color: #b71c1c;
+}

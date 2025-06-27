@@ -20,7 +20,11 @@
       </div>
       <div class="activity-column">
         <h2 class="activity-title">Comments Posted</h2>
-        <!-- List of comments posted by the user goes here -->
+        <div *ngFor="let thread of threadsUserRepliedTo"
+             class="thread-title-3d"
+             (click)="router.navigate(['/thread-detail', thread.id])">
+          {{ thread.title }}
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,30 @@
+<div class="thread-card">
+  <div class="thread-content">
+    <!-- Thread Title -->
+    <h3 class="thread-title">
+      <span class="thread-title-clickable">
+        {{ thread.title }}
+      </span>
+    </h3>
+
+    <!-- Description -->
+    <p class="thread-snippet">
+      {{ thread.description }}
+      <a [routerLink]="['/thread-detail', thread.id]">Read more</a>
+    </p>
+
+    <!-- Tags -->
+    <div class="thread-tags" *ngIf="thread.tags?.length">
+      <span *ngFor="let tag of thread.tags" class="tag-label">{{ tag }}</span>
+    </div>
+
+    <div class="thread-author">
+      Posted by: {{ thread.author }}
+    </div>
+
+    <!-- Delete Button -->
+    <div class="thread-actions">
+      <button class="action-btn delete-btn" (click)="onDelete()">Delete</button>
+    </div>
+  </div>
+</div>

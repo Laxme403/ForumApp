@@ -30,4 +30,8 @@ export class SidebarComponent {
   onQuestionsClick() {
     this.questionsClick.emit();
   }
+
+  goToAdmin() {
+    this.router.navigate(['/admin']);
+  }
 }

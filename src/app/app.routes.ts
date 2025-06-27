@@ -4,6 +4,8 @@ import { ThreadDetailComponent } from './components/thread-detail/thread-detail.
 import { ThreadCreateComponent } from './components/thread-create/thread-create.component';
 import { UserRegisterComponent } from './components/user-register/user-register.component';
 import { MyActivityComponent } from './components/my-activity/my-activity.component';
+import { AdminThreadListComponent } from './components/admin-thread-list/admin-thread-list.component'; // <-- Import AdminThreadListComponent
+
 export const routes: Routes = [
   {
     path: '',
@@ -24,6 +26,10 @@ export const routes: Routes = [
   {
     path: 'my-activity',
     component: MyActivityComponent
+  },
+  {
+    path: 'admin',
+    component: AdminThreadListComponent // Use your thread list component here
   },
   {
     path: '**',
