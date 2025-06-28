@@ -48,12 +48,18 @@
 
 <!-- Login Modal -->
 <div class="modal-overlay" *ngIf="showLogin"></div>
-<div class="modal" *ngIf="showLogin">
-  <app-user-login
-    (closeModal)="showLogin = false"
-    (loggedIn)="onLoginSuccess($event)">
-  </app-user-login>
-</div>
+<!-- Show login modal only when showLogin is true -->
+<app-user-login
+  *ngIf="showLogin"
+  (closeModal)="showLogin = false"
+  (loggedIn)="onLoginSuccess($event)">
+</app-user-login>
+
+<!-- Show role modal only when showRoleModal is true -->
+<app-role-modal
+  *ngIf="showRoleModal"
+  (roleSelected)="onRoleSelected($event)">
+</app-role-modal>
 
 
 

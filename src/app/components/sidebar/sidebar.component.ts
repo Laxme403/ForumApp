@@ -19,6 +19,10 @@ export class SidebarComponent {
     return !!localStorage.getItem('userEmail');
   }
 
+  get isAdmin(): boolean {
+    return localStorage.getItem('isAdmin') === 'true';
+  }
+
   goHome() {
     this.router.navigate(['/thread-list']);
   }

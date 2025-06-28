@@ -2,11 +2,12 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { RoleModalComponent } from '../role-modal/role-modal.component';
 
 @Component({
   selector: 'app-user-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RoleModalComponent],
   templateUrl: './user-register.component.html',
   styleUrls: ['./user-register.component.scss']
 })
@@ -19,6 +20,7 @@ export class UserRegisterComponent implements OnInit {
   fetchedUser: any = null;
   success = '';
   error = '';
+  showRoleModal = false;
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.registerForm = this.fb.group({
@@ -70,7 +72,8 @@ export class UserRegisterComponent implements OnInit {
   }
 
   onRegisterSuccess() {
-    this.registered.emit();
+    this.registered.emit();    // This should close the register modal in the parent
+    this.showRoleModal = true; // Show the role modal
   }
 
   close() {
@@ -80,5 +83,14 @@ export class UserRegisterComponent implements OnInit {
   // If you open the modal multiple times, also call this when opening:
   resetForm() {
     this.registerForm.reset();
+  }
+
+  onAuthSuccess() {
+    this.showRoleModal = true;
+  }
+
+  onRoleSelected(role: string) {
+    localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
+    this.showRoleModal = false;
   }
 }

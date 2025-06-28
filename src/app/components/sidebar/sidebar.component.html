@@ -8,5 +8,11 @@
   >
     My Activity
   </button>
-  <button class="sidebar-btn" (click)="goToAdmin()">Admin</button>
+  <button
+    *ngIf="isAdmin"
+    class="sidebar-btn"
+    (click)="goToAdmin()"
+  >
+    Admin 
+  </button>
 </nav>

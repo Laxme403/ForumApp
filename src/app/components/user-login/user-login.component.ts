@@ -1,23 +1,24 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../services/user.service';
-import { OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { RoleModalComponent } from '../role-modal/role-modal.component';
 
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RoleModalComponent],
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss']
 })
 export class UserLoginComponent implements OnInit {
-  @Output() loggedIn = new EventEmitter<any>();
-  @Output() closeModal = new EventEmitter<void>(); // Add this output for closing modal
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() loggedIn = new EventEmitter<void>();
   loginForm: FormGroup;
-  error: string | null = null;
+  error = '';
+  showRoleModal = false;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -29,25 +30,34 @@ export class UserLoginComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.loginForm.invalid) return;
-    const { email, password } = this.loginForm.value;
-    this.userService.login(email, password).subscribe({
-      next: (response) => {
-        console.log('Login response:', response);
-        this.loggedIn.emit(response);
-      },
-      error: (err) => {
-        console.error('Login failed:', err);
-        this.error = 'Invalid email or password';
-      }
-    });
-  }
-
-  resetForm() {
-    this.loginForm.reset();
+    if (this.loginForm.valid) {
+      this.http.post('http://localhost:5226/api/users/login', this.loginForm.value)
+        .subscribe({
+          next: (response: any) => {
+            localStorage.setItem('username', response.username);
+            localStorage.setItem('userId', response.id);
+            localStorage.setItem('userEmail', response.email);
+            this.loginForm.reset();
+            this.onLoginSuccess();
+          },
+          error: err => {
+            this.error = err.error?.message || 'Login failed';
+          }
+        });
+    }
   }
 
   close() {
     this.closeModal.emit();
+  }
+
+  onLoginSuccess() {
+    this.loggedIn.emit();
+    this.showRoleModal = true; // Show the role modal
+  }
+
+  onRoleSelected(role: string) {
+    localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
+    this.showRoleModal = false;
   }
 }

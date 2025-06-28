@@ -33,7 +33,6 @@ export class ThreadService {
   }
 
   softDeleteThread(threadId: number): Observable<any> {
-    // Use the correct endpoint for soft delete
     return this.http.put(`${this.apiUrl}/threads/${threadId}/soft-delete`, { deleteindex: 1 });
   }
 

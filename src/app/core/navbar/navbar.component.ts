@@ -6,6 +6,7 @@ import { ThreadService } from '../../services/thread.service';
 import { Thread } from '../../models/thread.model';
 import { UserLoginComponent } from '../../components/user-login/user-login.component';
 import { FormsModule } from '@angular/forms';
+import { RoleModalComponent } from '../../components/role-modal/role-modal.component'; // adjust path as needed
 
 @Component({
   selector: 'app-navbar',
@@ -15,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     RouterModule,
     UserRegisterComponent,
     UserLoginComponent,
-    FormsModule
+    FormsModule,
+    RoleModalComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
@@ -25,6 +27,7 @@ export class NavbarComponent implements OnInit {
   registerSuccess = false;
   avatarDropdownOpen = false;
   showLogin = false;
+  showRoleModal = false;
   allThreads: Thread[] = [];
   @Output() search = new EventEmitter<string>();
   searchTerm: string = '';
@@ -96,8 +99,8 @@ export class NavbarComponent implements OnInit {
     localStorage.setItem('userId', user.id);
     localStorage.setItem('username', user.username);
     localStorage.setItem('userEmail', user.email);
-    this.showLogin = false;
-    window.location.reload();
+    this.showLogin = false;      // Hide login modal
+    this.showRoleModal = true;   // Show role modal
   }
 
   get registeredEmail(): string | null {
@@ -106,6 +109,11 @@ export class NavbarComponent implements OnInit {
 
   onSearch() {
     this.search.emit(this.searchTerm);
+  }
+
+  onRoleSelected(role: string) {
+    localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
+    this.showRoleModal = false;
   }
 
   // Only keep this in the component that renders the thread list (e.g., ThreadListComponent)

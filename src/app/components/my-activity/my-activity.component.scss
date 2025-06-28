@@ -1,12 +1,14 @@
 .my-activity-layout {
   display: flex;
   align-items: flex-start;
+  padding-top: 4rem; // Increased from 2rem to 4rem
 }
 
 .my-activity-main {
   flex: 1 1 0;
   min-width: 0;
-  padding: 2rem 2rem 2rem 0;
+  padding: 4rem 2rem 2rem 0; // Increased top padding to 4rem
+  padding-top: 4rem; // Optional: extra top padding for main content
 }
 
 .activity-columns {
@@ -18,7 +20,7 @@
   flex: 1 1 0;
   background: #fff;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2.5rem; // Increased from 1.5rem to 2.5rem
   border: 1.5px solid #bfc7d1; // changed border color for the column
   box-shadow:
     0 4px 16px rgba(34, 40, 51, 0.13),
@@ -109,4 +111,11 @@
   font-size: 0.92rem;
   font-weight: 500;
   letter-spacing: 0.01em;
+}
+
+.activity-sidebar {
+  position: static !important;
+  top: 0 !important;
+  height: auto !important;
+  margin-top: 0 !important;
 }

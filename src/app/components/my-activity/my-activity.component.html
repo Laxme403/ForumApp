@@ -1,5 +1,7 @@
 <div class="my-activity-layout">
-  <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
+  <nav class="sidebar activity-sidebar">
+    <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
+  </nav>
 
   <app-tag-modal
     *ngIf="showTagModal"
