@@ -1,6 +1,14 @@
 <div class="thread-list-page">
   <div class="thread-list-layout" style="position:relative;">
-    <app-sidebar></app-sidebar>
+    <app-sidebar (homeClick)="onHomeClick()" (questionsClick)="onQuestionsClick()"></app-sidebar>
+
+    <app-tag-modal
+      *ngIf="showTagModal"
+      [tags]="allTags"
+      (selectTag)="onTagSelected($event)"
+      (close)="showTagModal = false">
+    </app-tag-modal>
+
     <div class="thread-list-main">
       <div class="thread-list-container">
         <app-admin-thread-card

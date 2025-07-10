@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class SidebarComponent {
   @Output() questionsClick = new EventEmitter<void>();
   @Output() tagModalClick = new EventEmitter<void>();
+  @Output() homeClick = new EventEmitter<void>();
 
   constructor(private router: Router) {}
 
@@ -24,7 +25,7 @@ export class SidebarComponent {
   }
 
   goHome() {
-    this.router.navigate(['/thread-list']);
+    this.homeClick.emit();
   }
 
   goToMyActivity() {

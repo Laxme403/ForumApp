@@ -6,7 +6,8 @@ import { ThreadService } from '../../services/thread.service';
 import { Thread } from '../../models/thread.model';
 import { UserLoginComponent } from '../../components/user-login/user-login.component';
 import { FormsModule } from '@angular/forms';
-import { RoleModalComponent } from '../../components/role-modal/role-modal.component'; // adjust path as needed
+import { RoleModalComponent } from '../../components/role-modal/role-modal.component';
+import { ThreadListComponent } from '../../components/thread-list/thread-list.component';
 
 @Component({
   selector: 'app-navbar',
@@ -17,7 +18,8 @@ import { RoleModalComponent } from '../../components/role-modal/role-modal.compo
     UserRegisterComponent,
     UserLoginComponent,
     FormsModule,
-    RoleModalComponent
+    RoleModalComponent,
+    ThreadListComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
@@ -31,6 +33,7 @@ export class NavbarComponent implements OnInit {
   allThreads: Thread[] = [];
   @Output() search = new EventEmitter<string>();
   searchTerm: string = '';
+  showThreads: boolean = false; // Optional: to control thread list display
 
   constructor(private router: Router, private threadService: ThreadService) {}
 
@@ -50,6 +53,7 @@ export class NavbarComponent implements OnInit {
   openRegister(): void {
     this.showRegister = true;
     this.registerSuccess = false;
+    localStorage.setItem('isAdmin', 'false'); // Reset admin flag on register open
   }
 
   closeRegister(): void {
@@ -80,6 +84,7 @@ export class NavbarComponent implements OnInit {
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
     localStorage.removeItem('userEmail');
+    localStorage.setItem('isAdmin', 'false'); // Reset admin flag on logout
     window.location.reload();
   }
 
@@ -90,6 +95,7 @@ export class NavbarComponent implements OnInit {
 
   openLogin() {
     this.showLogin = true;
+    localStorage.setItem('isAdmin', 'false'); // Reset admin flag on login open
   }
   closeLogin() {
     this.showLogin = false;
@@ -109,6 +115,13 @@ export class NavbarComponent implements OnInit {
 
   onSearch() {
     this.search.emit(this.searchTerm);
+    this.showThreads = true; // Optional: show thread list after search
+  }
+
+  onAuthSuccess() {
+    this.showLogin = false;      // Close login modal
+    this.showRegister = false;   // Close register modal (if open)
+    this.showRoleModal = true;   // Open role modal
   }
 
   onRoleSelected(role: string) {
@@ -116,7 +129,6 @@ export class NavbarComponent implements OnInit {
     this.showRoleModal = false;
   }
 
-  // Only keep this in the component that renders the thread list (e.g., ThreadListComponent)
   get filteredThreads() {
     let filtered = this.allThreads;
 

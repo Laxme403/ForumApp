@@ -79,4 +79,8 @@ export class MyActivityComponent implements OnInit {
     console.log('threadsUserRepliedTo:', result); // <-- Debug print
     return result;
   }
+
+  onHomeClick() {
+    this.router.navigate(['/']);
+  }
 }

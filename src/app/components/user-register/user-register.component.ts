@@ -14,6 +14,7 @@ import { RoleModalComponent } from '../role-modal/role-modal.component';
 export class UserRegisterComponent implements OnInit {
   @Output() registered = new EventEmitter<void>();
   @Output() closeModal = new EventEmitter<void>();
+  @Output() authSuccess = new EventEmitter<void>();
   registerForm: FormGroup;
   usernameForm: FormGroup;
   showUsernameForm = false;
@@ -49,7 +50,12 @@ export class UserRegisterComponent implements OnInit {
             this.onRegisterSuccess();
           },
           error: err => {
-            this.error = err.error?.message || 'Registration failed';
+            // Check for 409 Conflict (user already registered)
+            if (err.status === 409) {
+              this.error = 'User already registered ';
+            } else {
+              this.error = err.error?.message || 'Registration failed';
+            }
             this.success = '';
           }
         });
@@ -74,6 +80,7 @@ export class UserRegisterComponent implements OnInit {
   onRegisterSuccess() {
     this.registered.emit();    // This should close the register modal in the parent
     this.showRoleModal = true; // Show the role modal
+    this.authSuccess.emit();   // Emit authSuccess event
   }
 
   close() {

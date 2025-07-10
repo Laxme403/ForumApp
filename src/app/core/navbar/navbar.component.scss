@@ -129,3 +129,23 @@
   font-size: 1rem;
   margin-left: 8rem;// Move search bar a bit more to the right
 }
+
+// New modal backdrop styles
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; // Make sure it's above your threads/content
+}
+
+app-role-modal, .modal-content {
+  // If your modal content isn't already centered, you can add:
+  max-width: 400px;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}

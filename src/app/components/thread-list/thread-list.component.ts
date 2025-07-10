@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, HostListener, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThreadCardComponent } from '../../components/thread-card/thread-card.component';
@@ -7,7 +7,7 @@ import { ThreadService } from '../../services/thread.service';
 import { ThreadCreateComponent } from '../thread-create/thread-create.component'; 
 import { UserRegisterComponent } from '../user-register/user-register.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import your modal
+import { TagModalComponent } from '../tag-modal/tag-modal.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
@@ -20,20 +20,19 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     ThreadCreateComponent,
     UserRegisterComponent,
     TagModalComponent,
-    SidebarComponent // <-- Add this line
+    SidebarComponent
   ],
   templateUrl: './thread-list.component.html',
   styleUrls: ['./thread-list.component.scss']
 })
 export class ThreadListComponent implements OnInit {
   threads: Thread[] = [];
-  showFilterDropdown = false;
 
   selectedTags: Set<string> = new Set();
 
   showThreadCreateModal = false;
   showUserRegisterModal = false;
-  showTagModal = false; // <-- Added showTagModal
+  showTagModal = false;
 
   selectedThreadId: number | null = null;
 
@@ -46,8 +45,6 @@ export class ThreadListComponent implements OnInit {
     { name: 'C#', description: 'Programming language by Microsoft.' }
   ];
 
-  @ViewChild('filterDropdown') filterDropdownRef!: ElementRef;
-
   constructor(
     private threadService: ThreadService, 
     private router: Router,
@@ -56,11 +53,9 @@ export class ThreadListComponent implements OnInit {
 
   fetchThreads() {
     this.threadService.getThreads().subscribe((data) => {
-      console.log('Fetched threads:', data);
       this.threads = data.map(thread => {
         let tags: string[] = [];
         if (Array.isArray(thread.tags)) {
-          // If it's an array with a single comma-separated string, split it
           if (
             thread.tags.length === 1 &&
             typeof thread.tags[0] === 'string' &&
@@ -91,15 +86,6 @@ export class ThreadListComponent implements OnInit {
     });
   }
 
-  toggleTagFilter(tag: string, event: Event): void {
-    const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
-      this.selectedTags.add(tag);
-    } else {
-      this.selectedTags.delete(tag);
-    }
-  }
-
   @Input() searchTerm: string = '';
 
   get filteredThreads() {
@@ -108,14 +94,12 @@ export class ThreadListComponent implements OnInit {
     if (this.selectedTags.size > 0) {
       const selectedTagsLower = Array.from(this.selectedTags, t => t.toLowerCase().trim());
       filtered = filtered.filter(thread => {
-        // Normalize thread tags to lowercase and trimmed
         let threadTags: string[] = [];
         if (Array.isArray(thread.tags)) {
           threadTags = thread.tags.map(tag => tag.toLowerCase().trim());
         } else if (typeof thread.tags === 'string') {
           threadTags = (thread.tags as string).split(',').map((t: string) => t.toLowerCase().trim());
         }
-        // Check if ALL selected tags are present in threadTags
         return selectedTagsLower.every(tag => threadTags.includes(tag));
       });
     }
@@ -130,14 +114,6 @@ export class ThreadListComponent implements OnInit {
     return filtered;
   }
 
-  toggleFilterDropdown(): void {
-    this.showFilterDropdown = !this.showFilterDropdown;
-  }
-
-  onAskQuestion(): void {
-    alert('Ask Question clicked!');
-    // TODO: Replace with actual navigation or modal logic
-  }
 
   isArray(val: any): val is any[] {
     return Array.isArray(val);
@@ -182,19 +158,14 @@ export class ThreadListComponent implements OnInit {
   }
 
   onTagSelected(tagName: string) {
-    this.selectedTags = new Set([tagName]); // Only the clicked tag is selected
+    this.selectedTags = new Set([tagName]);
     this.showTagModal = false;
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (
-      this.showFilterDropdown &&
-      this.filterDropdownRef &&
-      !this.filterDropdownRef.nativeElement.contains(event.target)
-    ) {
-      this.showFilterDropdown = false;
-    }
+  onHomeClick() {
+    this.selectedTags.clear();
+    this.router.navigate(['/']);
+    this.fetchThreads();
   }
 
   get userInitial() {
@@ -206,4 +177,3 @@ export class ThreadListComponent implements OnInit {
     return !!localStorage.getItem('userEmail');
   }
 }
-

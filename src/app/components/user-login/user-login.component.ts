@@ -14,6 +14,7 @@ import { RoleModalComponent } from '../role-modal/role-modal.component';
 export class UserLoginComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
   @Output() loggedIn = new EventEmitter<void>();
+  @Output() authSuccess = new EventEmitter<void>();
   loginForm: FormGroup;
   error = '';
   showRoleModal = false;
@@ -38,7 +39,7 @@ export class UserLoginComponent implements OnInit {
             localStorage.setItem('userId', response.id);
             localStorage.setItem('userEmail', response.email);
             this.loginForm.reset();
-            this.onLoginSuccess();
+            this.authSuccess.emit();
           },
           error: err => {
             this.error = err.error?.message || 'Login failed';

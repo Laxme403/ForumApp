@@ -4,6 +4,8 @@ import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
 import { AdminThreadCardComponent } from '../admin-thread-card/admin-thread-card.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { Router } from '@angular/router';
+import { TagModalComponent } from '../tag-modal/tag-modal.component'; // <-- Add this import
 
 @Component({
   selector: 'app-admin-thread-list',
@@ -11,7 +13,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   imports: [
     CommonModule,
     AdminThreadCardComponent,
-    SidebarComponent
+    SidebarComponent,
+    TagModalComponent // <-- Add this here
   ],
   templateUrl: './admin-thread-list.component.html',
   styleUrls: ['./admin-thread-list.component.scss']
@@ -19,7 +22,18 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 export class AdminThreadListComponent implements OnInit {
   threads: Thread[] = [];
 
-  constructor(private threadService: ThreadService) {}
+  showTagModal = false;
+
+  allTags = [
+    { name: 'Frontend', description: 'User-facing part of a website or app.' },
+    { name: '.NET', description: 'Microsoft’s framework for building apps.' },
+    { name: 'Angular', description: 'Framework for building web apps.' },
+    { name: 'SQL', description: 'Language to manage database data.' },
+    { name: 'Database', description: 'Stores and organizes data.' },
+    { name: 'C#', description: 'Programming language by Microsoft.' }
+  ];
+
+  constructor(private threadService: ThreadService, private router: Router) {}
 
   ngOnInit() {
     this.fetchThreads();
@@ -56,5 +70,18 @@ export class AdminThreadListComponent implements OnInit {
     this.threadService.softDeleteThread(threadId).subscribe(() => {
       this.threads = this.threads.filter(thread => thread.id !== threadId);
     });
+  }
+
+  onQuestionsClick() {
+    this.showTagModal = true;
+  }
+
+  onTagSelected(tagName: string) {
+    this.showTagModal = false;
+    this.router.navigate(['/'], { queryParams: { tag: tagName } });
+  }
+
+  onHomeClick() {
+    this.router.navigate(['/']);
   }
 }

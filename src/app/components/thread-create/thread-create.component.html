@@ -1,13 +1,13 @@
-<form [formGroup]="threadForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label>Title:</label>
-    <input formControlName="title" required>
+<form [formGroup]="threadForm" (ngSubmit)="onSubmit()" class="thread-create-form">
+  <div class="form-row">
+    <label for="title">Title:</label>
+    <input id="title" formControlName="title" required>
   </div>
-  <div>
-    <label>Description:</label>
-    <textarea formControlName="description" required></textarea>
+  <div class="form-row form-row--vertical">
+    <label for="description">Description:</label>
+    <textarea id="description" formControlName="description" required></textarea>
   </div>
-  <div>
+  <div class="form-row">
     <label>Tags:</label>
     <div class="tags-checkbox-group">
       <label *ngFor="let tag of tagOptions">

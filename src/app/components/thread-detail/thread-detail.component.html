@@ -1,6 +1,6 @@
 <div class="thread-detail-layout">
   <!-- Sidebar -->
-  <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
+  <app-sidebar (homeClick)="onHomeClick()" (questionsClick)="onQuestionsClick()"></app-sidebar>
 
   <app-tag-modal
     *ngIf="showTagModal"
@@ -21,21 +21,6 @@
       </div>
       <div class="thread-author-detail">
         <strong>Author:</strong> {{ thread.author }}
-      </div>
-      <div class="thread-actions-horizontal">
-        <button class="action-btn like-btn" (click)="onLike()">Like</button>
-        <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
-        <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
-        <button
-          *ngIf="isLoggedInUserAuthor()"
-          class="action-btn edit-btn"
-          (click)="onEdit()"
-        >Edit</button>
-        <button
-          *ngIf="isLoggedInUserAuthor()"
-          class="action-btn delete-btn"
-          (click)="onDelete()"
-        >Delete</button>
       </div>
       <div class="replies-scroll">
         <div *ngIf="isArray(replies) && replies.length; else noReplies">

@@ -1,18 +1,13 @@
 <div class="thread-list-page">
   <div class="thread-list-layout" style="position:relative;">
-    <app-sidebar (questionsClick)="onQuestionsClick()"></app-sidebar>
-
-    <!-- Tag Modal appears next to sidebar -->
+    <app-sidebar (homeClick)="onHomeClick()" (questionsClick)="onQuestionsClick()"></app-sidebar>
     <app-tag-modal
       *ngIf="showTagModal"
       [tags]="allTags"
       (selectTag)="onTagSelected($event)"
       (close)="showTagModal = false">
     </app-tag-modal>
-
-    <!-- Main Thread List Content -->
     <div class="thread-list-main">
-      <!-- Thread List -->
       <div class="thread-list-container" [class.blurred]="selectedThreadId !== null">
         <app-thread-card
           *ngFor="let thread of filteredThreads"
@@ -21,8 +16,6 @@
           (selectThread)="onSelectThread($event)">
         </app-thread-card>
       </div>
-
-      <!-- Modal-like highlighted selected thread card -->
       <ng-container *ngIf="selectedThreadId !== null && selectedThread">
         <div class="thread-modal-overlay" (click)="selectedThreadId = null"></div>
         <div class="thread-modal">
@@ -36,11 +29,7 @@
     </div>
   </div>
 </div>
-
-<!-- Ask Question Button -->
 <button *ngIf="isRegistered" class="ask-question-btn" (click)="openThreadCreate()">Ask Question</button>
-
-<!-- Modal overlay and modal content -->
 <div class="modal-overlay" *ngIf="showThreadCreateModal" (click)="closeThreadCreate()"></div>
 <div class="modal" *ngIf="showThreadCreateModal">
   <app-thread-create
@@ -48,8 +37,6 @@
     (created)="onThreadCreated()">
   </app-thread-create>
 </div>
-
-<!-- User Register Modal -->
 <div class="modal-overlay" *ngIf="showUserRegisterModal" (click)="closeUserRegisterModal()"></div>
 <div class="modal" *ngIf="showUserRegisterModal">
   <app-user-register (registered)="closeUserRegisterModal(); openThreadCreate()"></app-user-register>

@@ -39,7 +39,11 @@
 <!-- Modal overlay and modal content -->
 <div class="modal-overlay" *ngIf="showRegister"></div>
 <div class="modal" *ngIf="showRegister">
-  <app-user-register (registered)="onRegisterSuccess()" (closeModal)="showRegister = false"></app-user-register>
+  <app-user-register
+    *ngIf="showRegister"
+    (closeModal)="showRegister = false"
+    (authSuccess)="onAuthSuccess()">
+  </app-user-register>
 </div>
 
 <div *ngIf="registerSuccess" class="register-success-message">
@@ -52,14 +56,17 @@
 <app-user-login
   *ngIf="showLogin"
   (closeModal)="showLogin = false"
-  (loggedIn)="onLoginSuccess($event)">
+  (authSuccess)="onAuthSuccess()">
 </app-user-login>
 
-<!-- Show role modal only when showRoleModal is true -->
-<app-role-modal
-  *ngIf="showRoleModal"
-  (roleSelected)="onRoleSelected($event)">
-</app-role-modal>
+<!-- Role Modal Overlay and Modal -->
+<div class="modal-backdrop" *ngIf="showRoleModal">
+  <app-role-modal
+    (roleSelected)="onRoleSelected($event)">
+  </app-role-modal>
+</div>
+
+<app-thread-list [searchTerm]="searchTerm"></app-thread-list>
 
 
 

@@ -1,5 +1,5 @@
 .thread-detail-page {
-  padding-top: 80px; // matches navbar height
+  padding-top: 200px; // Increased from 150px to 200px for even more space from the top
   padding-left: 1rem;
   padding-right: 1rem;
   font-family: 'Segoe UI', Arial, sans-serif;
@@ -177,6 +177,7 @@
   display: flex;
   align-items: flex-start;
   min-height: 80vh;
+  margin-top: 1.5rem; // Add extra space below the navbar for both sidebar and main
 }
 
 .thread-detail-main {

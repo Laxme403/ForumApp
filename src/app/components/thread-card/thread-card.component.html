@@ -30,9 +30,9 @@
       <button class="action-btn dislike-btn" (click)="onDislike()">Dislike</button>
       <button class="action-btn reply-btn" (click)="onReply()">Reply</button>
     </div>
-  <div class="thread-author">
-  Posted by: {{ thread.author }}
-</div>
+    <div class="thread-author">
+      Posted by: {{ thread.author }}
+    </div>
     <!-- Registration Modal (pseudo) -->
     <app-user-register
       *ngIf="showRegisterModal"
@@ -48,21 +48,6 @@
         rows="4"
       ></textarea>
       <button (click)="submitReply()">Submit</button>
-    </div>
-  </div>
-
-  <!-- Stats on the Right -->
-  <div class="thread-stats">
-    <div>Likes {{ thread.likes }}</div>
-    <div>Dislikes {{ thread.dislikes }}</div>
-    <div>
-      Replies
-      <ng-container *ngIf="isArray(thread.replies); else replyCount">
-        {{ thread.replies.length }}
-      </ng-container>
-      <ng-template #replyCount>
-        {{ thread.replies || 0 }}
-      </ng-template>
     </div>
   </div>
 </div>

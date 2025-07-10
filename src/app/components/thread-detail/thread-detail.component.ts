@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { SidebarComponent } from '../sidebar/sidebar.component'; // <-- Import SidebarComponent
+import { SidebarComponent } from '../sidebar/sidebar.component';
 import { TagModalComponent } from '../tag-modal/tag-modal.component';
 
 import { ThreadService } from '../../services/thread.service';
@@ -13,7 +13,7 @@ import { Reply } from '../../models/reply.model';
 @Component({
   selector: 'app-thread-detail',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, TagModalComponent], // <-- Add SidebarComponent here
+  imports: [CommonModule, SidebarComponent, TagModalComponent],
   templateUrl: './thread-detail.component.html',
   styleUrls: ['./thread-detail.component.scss']
 })
@@ -78,28 +78,7 @@ export class ThreadDetailComponent implements OnInit {
     this.router.navigate(['/'], { queryParams: { tag: tagName } });
   }
 
-  isLoggedInUserAuthor(): boolean {
-    const username = localStorage.getItem('username');
-    return this.thread && this.thread.author === username;
-  }
-
-  onEdit() {
-    // Edit logic here
-  }
-
-  onDelete() {
-    // Delete logic here
-  }
-
-  onLike() {
-    // Implement like logic here
-  }
-
-  onDislike() {
-    // Implement dislike logic here
-  }
-
-  onReply() {
-    // Implement reply logic here
+  onHomeClick() {
+    this.router.navigate(['/']);
   }
 }
