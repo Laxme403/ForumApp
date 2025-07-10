@@ -7,8 +7,8 @@ import { Thread } from '../../models/thread.model';
 import { UserLoginComponent } from '../../components/user-login/user-login.component';
 import { FormsModule } from '@angular/forms';
 import { RoleModalComponent } from '../../components/role-modal/role-modal.component';
+import { SearchService } from '../../services/search.service';
 import { ThreadListComponent } from '../../components/thread-list/thread-list.component';
-
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -18,31 +18,23 @@ import { ThreadListComponent } from '../../components/thread-list/thread-list.co
     UserRegisterComponent,
     UserLoginComponent,
     FormsModule,
-    RoleModalComponent,
-    ThreadListComponent
+    RoleModalComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  @Output() search = new EventEmitter<string>();
   showRegister = false;
   registerSuccess = false;
   avatarDropdownOpen = false;
   showLogin = false;
   showRoleModal = false;
-  allThreads: Thread[] = [];
-  @Output() search = new EventEmitter<string>();
   searchTerm: string = '';
-  showThreads: boolean = false; // Optional: to control thread list display
 
-  constructor(private router: Router, private threadService: ThreadService) {}
+  constructor(private router: Router, private searchService: SearchService) {}
 
   ngOnInit(): void {
-    this.threadService.getThreads().subscribe((threads: Thread[]) => {
-      this.allThreads = threads;
-      console.log('Fetched threads:', threads);
-    });
-
     window.addEventListener('click', () => this.avatarDropdownOpen = false);
   }
 
@@ -113,10 +105,12 @@ export class NavbarComponent implements OnInit {
     return localStorage.getItem('userEmail');
   }
 
-  onSearch() {
-    this.search.emit(this.searchTerm);
-    this.showThreads = true; // Optional: show thread list after search
-  }
+@Output() onearch = new EventEmitter<string>();
+onSearch() {
+  this.search.emit(this.searchTerm);
+  this.searchService.updateSearchTerm(this.searchTerm);
+  this.router.navigate(['/']);
+}
 
   onAuthSuccess() {
     this.showLogin = false;      // Close login modal
@@ -129,18 +123,5 @@ export class NavbarComponent implements OnInit {
     this.showRoleModal = false;
   }
 
-  get filteredThreads() {
-    let filtered = this.allThreads;
 
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(thread =>
-        thread.title.toLowerCase().includes(term)
-      );
-    }
-
-    // ...any other filtering logic (e.g., tags) can follow here...
-
-    return filtered;
-  }
 }
