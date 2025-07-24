@@ -36,8 +36,8 @@
     <!-- Registration Modal (pseudo) -->
     <app-user-register
       *ngIf="showRegisterModal"
-      (registerSuccess)="onRegisterSuccess()"
-      (close)="showRegisterModal = false">
+      (registered)="onRegisterSuccess()"
+      (closeModal)="showRegisterModal = false">
     </app-user-register>
 
     <!-- Reply Box -->

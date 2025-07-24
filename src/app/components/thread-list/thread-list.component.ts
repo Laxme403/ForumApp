@@ -9,6 +9,7 @@ import { UserRegisterComponent } from '../user-register/user-register.component'
 import { Router, ActivatedRoute } from '@angular/router';
 import { TagModalComponent } from '../tag-modal/tag-modal.component'; // import your modal
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-thread-list',
@@ -51,7 +52,8 @@ export class ThreadListComponent implements OnInit {
   constructor(
     private threadService: ThreadService, 
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   fetchThreads() {
@@ -165,6 +167,12 @@ export class ThreadListComponent implements OnInit {
     this.showUserRegisterModal = false;
   }
 
+  onRegisterSuccess() {
+    // Role is automatically assigned by backend, so close modal and open thread create
+    this.closeUserRegisterModal();
+    this.openThreadCreate();
+  }
+
   get loggedInUsername() {
     return localStorage.getItem('username') || '';
   }
@@ -198,12 +206,12 @@ export class ThreadListComponent implements OnInit {
   }
 
   get userInitial() {
-    const email = localStorage.getItem('userEmail');
-    return email ? email.charAt(0).toUpperCase() : '';
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser ? currentUser.username.charAt(0).toUpperCase() : '';
   }
 
   get isRegistered(): boolean {
-    return !!localStorage.getItem('userEmail');
+    return this.authService.isAuthenticated();
   }
 }
 

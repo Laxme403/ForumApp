@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
 import { Thread } from '../../models/thread.model';
 import { ThreadService } from '../../services/thread.service';
 import { Reply } from '../../models/reply.model';
-import { ReplyService } from '../../services/reply.service'; // <-- Add this import
+import { ReplyService } from '../../services/reply.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-my-activity',
@@ -25,21 +26,28 @@ export class MyActivityComponent implements OnInit {
   constructor(
     public router: Router,
     private threadService: ThreadService,
-    private replyService: ReplyService // <-- Add this parameter
+    private replyService: ReplyService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.threadService.getThreads().subscribe((data: Thread[]) => {
-      this.threads = data; // No normalization needed!
+      this.threads = data;
     });
     this.replyService.getReplies().subscribe((data: Reply[]) => {
       this.replies = data;
     });
-    const userId = Number(localStorage.getItem('userId'));
-    this.threadService.getThreadsLikedByUser(userId).subscribe(threads => {
+    
+    this.threadService.getThreadsLikedByUser(currentUser.id).subscribe(threads => {
       this.threadsUserLiked = threads;
     });
-    this.threadService.getThreadsDislikedByUser(userId).subscribe(threads => {
+    this.threadService.getThreadsDislikedByUser(currentUser.id).subscribe(threads => {
       this.threadsUserDisliked = threads;
     });
   }
@@ -64,19 +72,22 @@ export class MyActivityComponent implements OnInit {
   }
 
   get userThreads(): Thread[] {
-    const username = localStorage.getItem('username');
-    return this.threads.filter(thread => thread.author === username);
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return [];
+    return this.threads.filter(thread => thread.author === currentUser.username);
   }
 
   get threadsUserRepliedTo(): Thread[] {
-    const userId = Number(localStorage.getItem('userId'));
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return [];
+    
     const repliedThreadIds = this.replies
-      .filter(reply => reply.userId === userId)
+      .filter(reply => reply.userId === currentUser.id)
       .map(reply => reply.threadId);
 
     const uniqueThreadIds = Array.from(new Set(repliedThreadIds));
     const result = this.threads.filter(thread => uniqueThreadIds.includes(thread.id));
-    console.log('threadsUserRepliedTo:', result); // <-- Debug print
+    console.log('threadsUserRepliedTo:', result);
     return result;
   }
 }

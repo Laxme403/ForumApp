@@ -1,7 +1,8 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common'; // <-- Add this
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-thread-create',
@@ -20,7 +21,7 @@ export class ThreadCreateComponent {
   tagOptions = ['Frontend', '.NET', 'SQL', 'Angular', 'C#', 'Database'];
   selectedTags: string[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService) {
     this.threadForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -30,6 +31,12 @@ export class ThreadCreateComponent {
 
   onSubmit() {
     if (this.threadForm.valid) {
+      const currentUser = this.authService.getCurrentUser();
+      if (!currentUser) {
+        this.error = 'You must be logged in to create a thread';
+        return;
+      }
+
       let tagsValue = this.threadForm.value.tags;
       if (Array.isArray(tagsValue)) {
         tagsValue = tagsValue.join(',');
@@ -38,8 +45,8 @@ export class ThreadCreateComponent {
         title: this.threadForm.value.title,
         description: this.threadForm.value.description,
         tags: tagsValue,
-        author: localStorage.getItem('username') || '', // or this.author if passed as input
-        userId: +(localStorage.getItem('userId') || 0), // convert to number
+        author: currentUser.username,
+        userId: currentUser.id,
         likes: 0,
         dislikes: 0,
         replies: 0
@@ -69,18 +76,5 @@ export class ThreadCreateComponent {
     }
     // Update the form control value as a comma-separated string or array as needed by your backend
     this.threadForm.get('tags')?.setValue(this.selectedTags.join(','));
-  }
-
-  // Assuming you have a login method where you get the response with username and id
-  login() {
-    this.http.post('http://localhost:5226/api/login', { /* your login data */ }).subscribe({
-      next: (response: any) => {
-        localStorage.setItem('username', response.username);
-        localStorage.setItem('userId', response.id); // Make sure your backend returns the user id!
-      },
-      error: err => {
-        console.error('Login failed', err);
-      }
-    });
   }
 }

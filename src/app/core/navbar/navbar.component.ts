@@ -6,7 +6,7 @@ import { ThreadService } from '../../services/thread.service';
 import { Thread } from '../../models/thread.model';
 import { UserLoginComponent } from '../../components/user-login/user-login.component';
 import { FormsModule } from '@angular/forms';
-import { RoleModalComponent } from '../../components/role-modal/role-modal.component'; // adjust path as needed
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,8 +16,7 @@ import { RoleModalComponent } from '../../components/role-modal/role-modal.compo
     RouterModule,
     UserRegisterComponent,
     UserLoginComponent,
-    FormsModule,
-    RoleModalComponent
+    FormsModule
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
@@ -27,12 +26,11 @@ export class NavbarComponent implements OnInit {
   registerSuccess = false;
   avatarDropdownOpen = false;
   showLogin = false;
-  showRoleModal = false;
   allThreads: Thread[] = [];
   @Output() search = new EventEmitter<string>();
   searchTerm: string = '';
 
-  constructor(private router: Router, private threadService: ThreadService) {}
+  constructor(private router: Router, private threadService: ThreadService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.threadService.getThreads().subscribe((threads: Thread[]) => {
@@ -57,6 +55,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onRegisterSuccess(): void {
+    // Role is automatically assigned by backend, so just close modal and show success
     this.showRegister = false;
     this.registerSuccess = true;
     setTimeout(() => this.registerSuccess = false, 3000);
@@ -68,18 +67,16 @@ export class NavbarComponent implements OnInit {
   }
 
   get isRegistered(): boolean {
-    return !!localStorage.getItem('userEmail');
+    return this.authService.isAuthenticated();
   }
 
   get userInitial(): string {
-    const email = localStorage.getItem('userEmail');
-    return email ? email.charAt(0).toUpperCase() : '';
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser?.email ? currentUser.email.charAt(0).toUpperCase() : '';
   }
 
   logout(): void {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('userEmail');
+    this.authService.logout();
     window.location.reload();
   }
 
@@ -96,24 +93,18 @@ export class NavbarComponent implements OnInit {
   }
 
   onLoginSuccess(user: any) {
-    localStorage.setItem('userId', user.id);
-    localStorage.setItem('username', user.username);
-    localStorage.setItem('userEmail', user.email);
+    // User data is already stored by AuthService, just close the modal
     this.showLogin = false;      // Hide login modal
-    this.showRoleModal = true;   // Show role modal
+    // Role is automatically assigned by backend - no modal needed
   }
 
   get registeredEmail(): string | null {
-    return localStorage.getItem('userEmail');
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser?.email || null;
   }
 
   onSearch() {
     this.search.emit(this.searchTerm);
-  }
-
-  onRoleSelected(role: string) {
-    localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
-    this.showRoleModal = false;
   }
 
   // Only keep this in the component that renders the thread list (e.g., ThreadListComponent)

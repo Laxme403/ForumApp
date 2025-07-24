@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ReplyService } from '../../services/reply.service'; // adjust path as needed
 import { Reply } from '../../models/reply.model';
 import { ThreadService } from '../../services/thread.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-thread-card',
@@ -40,7 +41,8 @@ export class ThreadCardComponent {
     private route: ActivatedRoute,
     private threadService: ThreadService,
     private replyService: ReplyService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   getPreview(description: string): string {
@@ -54,13 +56,13 @@ export class ThreadCardComponent {
   }
 
   onLike() {
-    const userId = Number(localStorage.getItem('userId'));
-    if (!userId) return;
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
 
     // If already liked, do nothing
     if (this.userVote === 'like') return;
 
-    this.threadService.likeThread(this.thread.id, userId).subscribe({
+    this.threadService.likeThread(this.thread.id, currentUser.id).subscribe({
       next: (res) => {
         this.thread.likes = res.likes;
         this.thread.dislikes = res.dislikes;
@@ -73,13 +75,13 @@ export class ThreadCardComponent {
   }
 
   onDislike() {
-    const userId = Number(localStorage.getItem('userId'));
-    if (!userId) return;
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
 
     // If already disliked, do nothing
     if (this.userVote === 'dislike') return;
 
-    this.threadService.dislikeThread(this.thread.id, userId).subscribe({
+    this.threadService.dislikeThread(this.thread.id, currentUser.id).subscribe({
       next: (res) => {
         this.thread.likes = res.likes;
         this.thread.dislikes = res.dislikes;
@@ -113,15 +115,17 @@ export class ThreadCardComponent {
   }
 
   get isRegistered(): boolean {
-    return !!localStorage.getItem('userEmail');
+    return this.authService.isAuthenticated();
   }
 
   submitReply() {
-    const userId = Number(localStorage.getItem('userId')); // or get from your auth/user service
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) return;
+    
     const reply: Reply = {
       content: this.replyText,
       threadId: this.thread.id,
-      userId: userId
+      userId: currentUser.id
     };
 
     this.replyService.createReply(reply).subscribe({

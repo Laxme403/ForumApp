@@ -8,6 +8,7 @@ import { TagModalComponent } from '../tag-modal/tag-modal.component';
 
 import { ThreadService } from '../../services/thread.service';
 import { ReplyService } from '../../services/reply.service';
+import { AuthService } from '../../services/auth.service';
 import { Reply } from '../../models/reply.model';
 
 @Component({
@@ -38,7 +39,8 @@ export class ThreadDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private threadService: ThreadService,
     private replyService: ReplyService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -79,8 +81,8 @@ export class ThreadDetailComponent implements OnInit {
   }
 
   isLoggedInUserAuthor(): boolean {
-    const username = localStorage.getItem('username');
-    return this.thread && this.thread.author === username;
+    const currentUser = this.authService.getCurrentUser();
+    return this.thread && currentUser && this.thread.author === currentUser.username;
   }
 
   onEdit() {

@@ -1,13 +1,12 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RoleModalComponent } from '../role-modal/role-modal.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RoleModalComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-login.component.html',
   styleUrls: ['./user-login.component.scss']
 })
@@ -18,7 +17,7 @@ export class UserLoginComponent implements OnInit {
   error = '';
   showRoleModal = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -31,16 +30,15 @@ export class UserLoginComponent implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.http.post('http://localhost:5226/api/users/login', this.loginForm.value)
+      const { email, password } = this.loginForm.value;
+      this.authService.login(email, password)
         .subscribe({
-          next: (response: any) => {
-            localStorage.setItem('username', response.username);
-            localStorage.setItem('userId', response.id);
-            localStorage.setItem('userEmail', response.email);
+          next: (response) => {
+            // Token and user data are automatically stored by AuthService
             this.loginForm.reset();
             this.onLoginSuccess();
           },
-          error: err => {
+          error: (err: any) => {
             this.error = err.error?.message || 'Login failed';
           }
         });
@@ -57,6 +55,7 @@ export class UserLoginComponent implements OnInit {
   }
 
   onRoleSelected(role: string) {
+    // Store role in localStorage for compatibility with existing components
     localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
     this.showRoleModal = false;
   }

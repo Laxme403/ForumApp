@@ -2,12 +2,12 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RoleModalComponent } from '../role-modal/role-modal.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RoleModalComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-register.component.html',
   styleUrls: ['./user-register.component.scss']
 })
@@ -20,9 +20,8 @@ export class UserRegisterComponent implements OnInit {
   fetchedUser: any = null;
   success = '';
   error = '';
-  showRoleModal = false;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService) {
     this.registerForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -39,16 +38,15 @@ export class UserRegisterComponent implements OnInit {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.http.post('http://localhost:5226/api/users/register', this.registerForm.value)
+      const { username, email, password } = this.registerForm.value;
+      this.authService.register(username, email, password)
         .subscribe({
-          next: (response: any) => {
-            localStorage.setItem('username', response.username);
-            localStorage.setItem('userId', response.id);
-            localStorage.setItem('userEmail', response.email);
+          next: (response) => {
+            // Token and user data are automatically stored by AuthService
             this.registerForm.reset();
             this.onRegisterSuccess();
           },
-          error: err => {
+          error: (err: any) => {
             this.error = err.error?.message || 'Registration failed';
             this.success = '';
           }
@@ -72,8 +70,9 @@ export class UserRegisterComponent implements OnInit {
   }
 
   onRegisterSuccess() {
-    this.registered.emit();    // This should close the register modal in the parent
-    this.showRoleModal = true; // Show the role modal
+    this.registered.emit();    // Notify parent that registration is complete
+    // Role is automatically assigned by backend - no modal needed
+    this.closeModal.emit();    // Close the registration modal
   }
 
   close() {
@@ -83,14 +82,5 @@ export class UserRegisterComponent implements OnInit {
   // If you open the modal multiple times, also call this when opening:
   resetForm() {
     this.registerForm.reset();
-  }
-
-  onAuthSuccess() {
-    this.showRoleModal = true;
-  }
-
-  onRoleSelected(role: string) {
-    localStorage.setItem('isAdmin', role === 'admin' ? 'true' : 'false');
-    this.showRoleModal = false;
   }
 }

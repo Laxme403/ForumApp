@@ -52,5 +52,8 @@
 <!-- User Register Modal -->
 <div class="modal-overlay" *ngIf="showUserRegisterModal" (click)="closeUserRegisterModal()"></div>
 <div class="modal" *ngIf="showUserRegisterModal">
-  <app-user-register (registered)="closeUserRegisterModal(); openThreadCreate()"></app-user-register>
+  <app-user-register 
+    (registered)="onRegisterSuccess()" 
+    (closeModal)="closeUserRegisterModal()">
+  </app-user-register>
 </div>
