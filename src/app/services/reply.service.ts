@@ -15,23 +15,11 @@ export class ReplyService {
     return this.http.get<Reply[]>(this.apiUrl);
   }
 
-  getReplyById(id: number): Observable<Reply> {
-    return this.http.get<Reply>(`${this.apiUrl}/${id}`);
-  }
-
   getRepliesByThread(threadId: number): Observable<Reply[]> {
     return this.http.get<Reply[]>(`${this.apiUrl}/thread/${threadId}`);
   }
 
   createReply(reply: Reply): Observable<Reply> {
     return this.http.post<Reply>(this.apiUrl, reply);
-  }
-
-  updateReply(id: number, reply: Reply): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, reply);
-  }
-
-  deleteReply(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

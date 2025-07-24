@@ -24,14 +24,6 @@ export class ThreadService {
     return this.http.post<Thread>(`${this.apiUrl}/threads`, thread);
   }
 
-  updateThread(id: number, thread: Thread): Observable<any> {
-    return this.http.put(`${this.apiUrl}/threads/${id}`, thread);
-  }
-
-  deleteThread(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/threads/${id}`);
-  }
-
   softDeleteThread(threadId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/threads/${threadId}/soft-delete`, { deleteindex: 1 });
   }
