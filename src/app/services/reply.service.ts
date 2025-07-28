@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Reply } from '../models/reply.model';
 
+export interface ReplyCreateRequest {
+  content: string;
+  threadId: number;
+  userId: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +25,7 @@ export class ReplyService {
     return this.http.get<Reply[]>(`${this.apiUrl}/thread/${threadId}`);
   }
 
-  createReply(reply: Reply): Observable<Reply> {
-    return this.http.post<Reply>(this.apiUrl, reply);
+  createReply(replyData: ReplyCreateRequest): Observable<Reply> {
+    return this.http.post<Reply>(this.apiUrl, replyData);
   }
 }

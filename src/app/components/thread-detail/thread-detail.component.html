@@ -37,6 +37,31 @@
           (click)="onDelete()"
         >Delete</button>
       </div>
+      
+      <!-- Reply Form -->
+      <div *ngIf="showReplyForm" class="reply-form">
+        <h4>Write a Reply</h4>
+        <textarea 
+          [(ngModel)]="newReplyContent" 
+          placeholder="Enter your reply here..."
+          rows="4"
+          class="reply-textarea">
+        </textarea>
+        <div class="reply-form-actions">
+          <button 
+            (click)="onSubmitReply()" 
+            [disabled]="!newReplyContent.trim() || submittingReply"
+            class="btn-submit">
+            {{ submittingReply ? 'Posting...' : 'Post Reply' }}
+          </button>
+          <button 
+            (click)="onCancelReply()" 
+            class="btn-cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+
       <div class="replies-scroll">
         <div *ngIf="isArray(replies) && replies.length; else noReplies">
           <div *ngFor="let reply of replies" class="reply-card">

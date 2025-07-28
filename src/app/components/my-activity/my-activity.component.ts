@@ -8,6 +8,7 @@ import { ThreadService } from '../../services/thread.service';
 import { Reply } from '../../models/reply.model';
 import { ReplyService } from '../../services/reply.service';
 import { AuthService } from '../../services/auth.service';
+import { ReactionType } from '../../models/reaction.model';
 
 @Component({
   selector: 'app-my-activity',
@@ -44,10 +45,10 @@ export class MyActivityComponent implements OnInit {
       this.replies = data;
     });
     
-    this.threadService.getThreadsLikedByUser(currentUser.id).subscribe(threads => {
+    this.threadService.getThreadsReactedByUser(currentUser.id, ReactionType.Like).subscribe((threads: Thread[]) => {
       this.threadsUserLiked = threads;
     });
-    this.threadService.getThreadsDislikedByUser(currentUser.id).subscribe(threads => {
+    this.threadService.getThreadsReactedByUser(currentUser.id, ReactionType.Dislike).subscribe((threads: Thread[]) => {
       this.threadsUserDisliked = threads;
     });
   }

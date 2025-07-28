@@ -5,6 +5,7 @@ import { ThreadCreateComponent } from './components/thread-create/thread-create.
 import { UserRegisterComponent } from './components/user-register/user-register.component';
 import { MyActivityComponent } from './components/my-activity/my-activity.component';
 import { AdminThreadListComponent } from './components/admin-thread-list/admin-thread-list.component'; // <-- Import AdminThreadListComponent
+import { AuthGuard } from './guards/auth.guard'; // <-- Import AuthGuard
 
 export const routes: Routes = [
   {
@@ -13,11 +14,13 @@ export const routes: Routes = [
   },
   {
     path: 'thread-detail/:id', // <-- Use this path for detail navigation
-    component: ThreadDetailComponent
+    component: ThreadDetailComponent,
+    canActivate: [AuthGuard] // <-- Add auth guard protection
   },
   {
     path: 'create-thread',
-    component: ThreadCreateComponent
+    component: ThreadCreateComponent,
+    canActivate: [AuthGuard] // <-- Add auth guard protection  
   },
   {
     path: 'register',
@@ -25,11 +28,13 @@ export const routes: Routes = [
   },
   {
     path: 'my-activity',
-    component: MyActivityComponent
+    component: MyActivityComponent,
+    canActivate: [AuthGuard] // <-- Add auth guard protection
   },
   {
     path: 'admin',
-    component: AdminThreadListComponent // Use your thread list component here
+    component: AdminThreadListComponent, // Use your thread list component here
+    canActivate: [AuthGuard] // <-- Add auth guard protection
   },
   {
     path: '**',

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { ThreadService, ThreadCreateRequest } from '../../services/thread.service';
 
 @Component({
   selector: 'app-thread-create',
@@ -21,7 +22,7 @@ export class ThreadCreateComponent {
   tagOptions = ['Frontend', '.NET', 'SQL', 'Angular', 'C#', 'Database'];
   selectedTags: string[] = [];
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService, private threadService: ThreadService) {
     this.threadForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -41,29 +42,47 @@ export class ThreadCreateComponent {
       if (Array.isArray(tagsValue)) {
         tagsValue = tagsValue.join(',');
       }
-      const threadData = {
+      const threadData: ThreadCreateRequest = {
         title: this.threadForm.value.title,
         description: this.threadForm.value.description,
         tags: tagsValue,
         author: currentUser.username,
-        userId: currentUser.id,
-        likes: 0,
-        dislikes: 0,
-        replies: 0
+        userId: currentUser.id
       };
+      
       console.log('Thread data being sent:', threadData);
-      this.http.post('http://localhost:5226/api/threads', threadData).subscribe({
-        next: () => {
+      console.log('Current user:', currentUser);
+      console.log('Auth token:', this.authService.getToken());
+
+      // Use ThreadService instead of direct HTTP call
+      this.threadService.createThread(threadData).subscribe({
+        next: (response) => {
+          console.log('Thread created successfully:', response);
           this.success = 'Thread created!';
           this.error = '';
           this.threadForm.reset();
+          this.selectedTags = [];
           this.created.emit();
         },
-        error: err => {
-          this.error = err.error?.message || 'Failed to create thread';
+        error: (err) => {
+          console.error('Full error object:', err);
+          console.error('Error status:', err.status);
+          console.error('Error message:', err.message);
+          console.error('Error body:', err.error);
+          
+          if (err.status === 401) {
+            this.error = 'You are not authorized. Please log in again.';
+          } else if (err.status === 400) {
+            this.error = 'Invalid data provided. Please check your inputs.';
+          } else {
+            this.error = err.error?.message || err.message || 'Failed to create thread';
+          }
           this.success = '';
         }
       });
+    } else {
+      this.error = 'Please fill in all required fields';
+      this.success = '';
     }
   }
 

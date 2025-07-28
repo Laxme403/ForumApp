@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map, catchError } from 'rxjs/operators';
 
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: {
     id: number;
     username: string;
@@ -27,7 +28,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(response => {
-          this.setToken(response.token);
+          this.setToken(response.accessToken);
+          this.setRefreshToken(response.refreshToken);
           this.setUserData(response.user);
         })
       );
@@ -37,7 +39,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/register`, { username, email, password })
       .pipe(
         tap(response => {
-          this.setToken(response.token);
+          this.setToken(response.accessToken);
+          this.setRefreshToken(response.refreshToken);
           this.setUserData(response.user);
         })
       );
@@ -45,6 +48,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
     localStorage.removeItem('userEmail');
@@ -56,9 +60,17 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
   private setToken(token: string): void {
     localStorage.setItem('token', token);
     this.tokenSubject.next(token);
+  }
+
+  private setRefreshToken(refreshToken: string): void {
+    localStorage.setItem('refreshToken', refreshToken);
   }
 
   private setUserData(user: any): void {
@@ -112,5 +124,32 @@ export class AuthService {
   isAdmin(): boolean {
     const user = this.getCurrentUser();
     return user?.role === 'Admin';
+  }
+
+  refreshToken(): Observable<LoginResponse> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    return this.http.post<LoginResponse>(`${this.apiUrl}/refresh`, { refreshToken })
+      .pipe(
+        tap(response => {
+          this.setToken(response.accessToken);
+          this.setRefreshToken(response.refreshToken);
+          this.setUserData(response.user);
+        })
+      );
+  }
+
+  private handleTokenExpiration(): Observable<string> {
+    return this.refreshToken().pipe(
+      map(response => response.accessToken),
+      catchError(error => {
+        // If refresh fails, logout user
+        this.logout();
+        throw error;
+      })
+    );
   }
 }

@@ -16,6 +16,7 @@ export class AuthGuard implements CanActivate {
       return true;
     } else {
       // Redirect to home page if not authenticated
+      // You may want to show a login modal or message here
       this.router.navigate(['/']);
       return false;
     }

@@ -10,6 +10,7 @@ import { ReplyService } from '../../services/reply.service'; // adjust path as n
 import { Reply } from '../../models/reply.model';
 import { ThreadService } from '../../services/thread.service';
 import { AuthService } from '../../services/auth.service';
+import { ReactionType } from '../../models/reaction.model';
 
 @Component({
   selector: 'app-thread-card',
@@ -62,11 +63,11 @@ export class ThreadCardComponent {
     // If already liked, do nothing
     if (this.userVote === 'like') return;
 
-    this.threadService.likeThread(this.thread.id, currentUser.id).subscribe({
+    this.threadService.reactToThread(this.thread.id, currentUser.id, ReactionType.Like).subscribe({
       next: (res) => {
         this.thread.likes = res.likes;
         this.thread.dislikes = res.dislikes;
-        this.userVote = 'like';
+        this.userVote = res.userHasLiked ? 'like' : null;
       },
       error: (err) => {
         console.error('Failed to like thread', err);
@@ -81,11 +82,11 @@ export class ThreadCardComponent {
     // If already disliked, do nothing
     if (this.userVote === 'dislike') return;
 
-    this.threadService.dislikeThread(this.thread.id, currentUser.id).subscribe({
+    this.threadService.reactToThread(this.thread.id, currentUser.id, ReactionType.Dislike).subscribe({
       next: (res) => {
         this.thread.likes = res.likes;
         this.thread.dislikes = res.dislikes;
-        this.userVote = 'dislike';
+        this.userVote = res.userHasDisliked ? 'dislike' : null;
       },
       error: (err) => {
         console.error('Failed to dislike thread', err);

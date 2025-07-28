@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // <-- Add FormsModule for ngModel
 import { Router } from '@angular/router';
 
 import { SidebarComponent } from '../sidebar/sidebar.component'; // <-- Import SidebarComponent
 import { TagModalComponent } from '../tag-modal/tag-modal.component';
 
 import { ThreadService } from '../../services/thread.service';
-import { ReplyService } from '../../services/reply.service';
+import { ReplyService, ReplyCreateRequest } from '../../services/reply.service';
 import { AuthService } from '../../services/auth.service';
 import { Reply } from '../../models/reply.model';
 
 @Component({
   selector: 'app-thread-detail',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, TagModalComponent], // <-- Add SidebarComponent here
+  imports: [CommonModule, FormsModule, SidebarComponent, TagModalComponent], // <-- Add FormsModule
   templateUrl: './thread-detail.component.html',
   styleUrls: ['./thread-detail.component.scss']
 })
@@ -23,6 +24,11 @@ export class ThreadDetailComponent implements OnInit {
   replies: Reply[] = [];
   loading = true;
   error = '';
+
+  // Reply form properties
+  showReplyForm = false;
+  newReplyContent = '';
+  submittingReply = false;
 
   showTagModal = false;
 
@@ -56,14 +62,7 @@ export class ThreadDetailComponent implements OnInit {
       }
     });
 
-    this.replyService.getRepliesByThread(threadId).subscribe({
-      next: (replies) => {
-        this.replies = replies;
-      },
-      error: (err) => {
-        this.error = 'Failed to load replies';
-      }
-    });
+    this.loadReplies(threadId);
   }
 
   isArray(val: any): val is any[] {
@@ -102,6 +101,66 @@ export class ThreadDetailComponent implements OnInit {
   }
 
   onReply() {
-    // Implement reply logic here
+    // Toggle reply form visibility
+    this.showReplyForm = !this.showReplyForm;
+    if (this.showReplyForm) {
+      this.newReplyContent = ''; // Clear previous content
+    }
+  }
+
+  onSubmitReply() {
+    if (!this.newReplyContent.trim()) {
+      return;
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.error = 'You must be logged in to reply';
+      return;
+    }
+
+    this.submittingReply = true;
+    const threadId = Number(this.route.snapshot.paramMap.get('id'));
+    
+    const replyData: ReplyCreateRequest = {
+      content: this.newReplyContent.trim(),
+      threadId: threadId,
+      userId: currentUser.id
+    };
+
+    console.log('Submitting reply:', replyData); // Debug log
+
+    this.replyService.createReply(replyData).subscribe({
+      next: (reply) => {
+        console.log('Reply created successfully:', reply); // Debug log
+        // Refresh replies to show the new one
+        this.loadReplies(threadId);
+        this.newReplyContent = '';
+        this.showReplyForm = false;
+        this.submittingReply = false;
+      },
+      error: (err) => {
+        console.error('Error creating reply:', err); // Debug log
+        this.error = 'Failed to post reply: ' + (err.error?.message || err.message);
+        this.submittingReply = false;
+      }
+    });
+  }
+
+  onCancelReply() {
+    this.showReplyForm = false;
+    this.newReplyContent = '';
+  }
+
+  // Extract reply loading into separate method for reuse
+  private loadReplies(threadId: number) {
+    this.replyService.getRepliesByThread(threadId).subscribe({
+      next: (replies) => {
+        this.replies = replies;
+      },
+      error: (err) => {
+        this.error = 'Failed to load replies';
+      }
+    });
   }
 }
